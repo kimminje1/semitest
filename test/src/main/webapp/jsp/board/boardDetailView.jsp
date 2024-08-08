@@ -1,6 +1,7 @@
 <%@ page import="gudiSpring.freeboard.dto.BoardDto" %>
 <%@ page import="gudiSpring.comment.dto.CommentDto" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -110,24 +111,25 @@
         </tr>
         <tr>
             <th>제목</th>
-            <td><%= boardDto.getContentSubject() %></td>
+            <td><%= boardDto.getContentSubject() %> </td>
         </tr>
 		<tr>
-			<th>내용</th>
-			<td><%=boardDto.getContentText()%> <c:if
-					test="${not empty boardDto.contentFile}">
-					<img
-						src="<%= request.getContextPath() %>/images?filePath=D:/GudiSpring/img/<c:out value='${boardDto.contentFile}'/>"
-						alt="첨부 이미지" style="max-width: 50%;">
-				</c:if></td>
-		</tr>
-		<tr>
-			<th>파일</th>
-			<td><c:if test="${not empty boardDto.contentFile}">
-					<a
-						href="<%= request.getContextPath() %>/images?filePath=D:/GudiSpring/img/<c:out value='${boardDto.contentFile}'/>&action=download">다운로드</a>
-				</c:if></td>
-		</tr>
+            <th>내용</th>
+              <td>
+              <%= boardDto.getContentText()%>
+              <c:if test="${not empty boardDto.contentFile}">
+      <img src="${pageContext.request.contextPath}/image/freeboard/${fn:replace(boardDto.contentFile, '/test/images/', '')}" alt="Attached Image3" />
+			</c:if>
+            </td>
+   
+          
+        </tr>
+        <tr>
+            <th>파일</th>
+            <td>
+               <%= boardDto.getContentFile() %>
+            </td>
+        </tr>
 
 		<tr>
             <th>작성일</th>

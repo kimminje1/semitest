@@ -1,9 +1,7 @@
 package gudiSpring.freeboard.controller;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.file.Files;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,40 +9,29 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/images")
+@WebServlet("/image/freeboard/*")
 public class ImageController extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    	String filename = request.getPathInfo().substring(1); // URL에서 파일 이름 추출
+        File file = new File("D:/GudiSpring/img/freeboard", filename); // 전체 파일 경로
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) 
-            throws ServletException, IOException {
-        // 요청된 이미지 파일 경로를 가져옵니다.
-        String filePath = req.getParameter("filePath");
-        File imageFile = new File(filePath);
+        // 파일 이름만 추출
+        String simpleFileName = file.getName();
 
-        // 이미지 파일이 존재하지 않는 경우 404 에러를 반환합니다.
-        if (!imageFile.exists()) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
+        System.out.println("파일 이름 확인: " + simpleFileName);
 
-        // 이미지 다운로드 처리
-        String action = req.getParameter("action");
-        if ("download".equals(action)) {
-            res.setContentType("application/octet-stream");
-            res.setHeader("Content-Disposition", "attachment; filename=\"" + imageFile.getName() + "\"");
-        } else {
-            res.setContentType(getServletContext().getMimeType(imageFile.getName()));
-        }
-
-        // 이미지 파일을 클라이언트로 전송합니다.
-        try (FileInputStream fis = new FileInputStream(imageFile);
-             OutputStream os = res.getOutputStream()) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        }
+        response.setHeader("Content-Type", getServletContext().getMimeType(simpleFileName));
+        response.setHeader("Content-Length", String.valueOf(file.length()));
+        response.setHeader("Content-Disposition", "inline; filename=\"" + simpleFileName + "\"");
+        Files.copy(file.toPath(), response.getOutputStream()); // 파일 내용 전송
     }
+        
+        //     <img src="/test/image/freeboard/sana.webp" alt="Sana Image">
+//	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//	    String fullPath = request.getPathInfo().substring(1);
+//	    String filename = new File(fullPath).getName(); // 파일 이름만 추출
+//	    request.setAttribute("filename", filename); // 요청 속성에 저장
+//	    request.getRequestDispatcher("/jsp/board/boardDetailView.jsp").forward(request, response); // JSP 페이지로 전달
+//	}
+
 }

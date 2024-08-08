@@ -1,6 +1,4 @@
 package gudiSpring.freeboard.controller;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.io.File;
@@ -48,11 +46,11 @@ public class AddBoardController extends HttpServlet {
     	req.setCharacterEncoding(CHARSET);
     	
     	System.out.println("Request is multipart: " + JakartaServletFileUpload.isMultipartContent(req));
-    	// DiskFileItemFactory 설정
+    	// DiskFileItemFactory 설정-업로드기능
         DiskFileItemFactory factory = DiskFileItemFactory.builder()
             .setPath(Paths.get(UPLOAD_DIRECTORY)) // 임시 저장소 디렉토리 설정
             .get();
-        // JakartaServletFileUpload 설정
+        // JakartaServletFileUpload 설정-파일크기기능
         JakartaServletFileUpload upload = new JakartaServletFileUpload(factory);
         upload.setFileSizeMax(1024 * 1024 * 10); // 10MB
         upload.setSizeMax(1024 * 1024 * 50); // 50MB
