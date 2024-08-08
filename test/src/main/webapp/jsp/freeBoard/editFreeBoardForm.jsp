@@ -60,7 +60,7 @@
 </head>
 <body>
     <h2>게시글 수정</h2>
-    <form action="<%= request.getContextPath() %>/freeboard/edit" method="post">
+    <form action="<%= request.getContextPath() %>/freeboard/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="contentNo" value="${boardDto.contentNo}">
         
         <label for="subject">제목:</label>
