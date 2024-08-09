@@ -33,7 +33,7 @@ public class EditCommentController extends HttpServlet {
 		 int commentNo = Integer.parseInt(req.getParameter("commentNo"));
 	        int contentNo = Integer.parseInt(req.getParameter("contentNo"));
 	        String commentContent = req.getParameter("commentContent");
-
+	        String boardType = req.getParameter("boardType"); // 게시판 유형 파라미터 추가
 	        Connection conn = null;
 	        try {
 	            ServletContext sc = this.getServletContext();
@@ -48,7 +48,7 @@ public class EditCommentController extends HttpServlet {
 	            commentDao.updateComment(commentDto);
 	           
 
-	            res.sendRedirect(req.getContextPath() + "/freeboard/Detail?contentNo="+contentNo);
+	            res.sendRedirect(req.getContextPath() + "/" + boardType + "/Detail?contentNo=" + contentNo);	
 	        } catch (Exception e) {
 	            throw new ServletException("댓글 수정 오류", e);
 	        }

@@ -1,4 +1,4 @@
-package gudiSpring.freeboard.controller;
+package gudiSpring.reviewboard.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
-import gudiSpring.freeboard.dao.BoardDao;
-import gudiSpring.freeboard.dto.BoardDto;
+import gudiSpring.reviewboard.dao.ReviewBoardDao;
+import gudiSpring.reviewboard.dto.ReviewBoardDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,11 +24,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/freeboard/edit")
-public class EditBoardController extends HttpServlet {
+@WebServlet("/reviewboard/edit")
+public class EditReviewBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/freeboard";
+    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
     @Override
@@ -40,12 +40,12 @@ public class EditBoardController extends HttpServlet {
             ServletContext sc = this.getServletContext();
             conn = (Connection) sc.getAttribute("conn");
 
-            BoardDao boardDao = new BoardDao();
+            ReviewBoardDao boardDao = new ReviewBoardDao();
             boardDao.setConnection(conn);
-            BoardDto boardDto = boardDao.selectOne(contentNo);
+            ReviewBoardDto boardDto = boardDao.selectOne(contentNo);
 
             req.setAttribute("boardDto", boardDto);
-            req.getRequestDispatcher("/jsp/board/freeboard/editFreeBoardForm.jsp").forward(req, res);
+            req.getRequestDispatcher("/jsp/board/reviewboard/editReviewBoardForm.jsp").forward(req, res);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ServletException("게시글 수정 중 오류 발생", e);
@@ -127,7 +127,7 @@ public class EditBoardController extends HttpServlet {
 
                                 // 파일 저장
                                 item.write(storeFile.toPath());	
-                                filePath = "freeboard/" + uniqueFileName; // 상대 경로로 변경
+                                filePath = "reviewboard/" + uniqueFileName; // 상대 경로로 변경
                             }
                         }
                     }
@@ -150,7 +150,7 @@ public class EditBoardController extends HttpServlet {
             }
             
             // BoardDto 객체 생성 및 데이터 설정
-            BoardDto boardDto = new BoardDto();
+            ReviewBoardDto boardDto = new ReviewBoardDto();
             boardDto.setContentNo(contentNo);
             boardDto.setContentSubject(contentSubject);
             boardDto.setContentText(contentText);
@@ -163,12 +163,12 @@ public class EditBoardController extends HttpServlet {
                 boardDto.setContentFile(filePath); // 파일 경로 설정
             }
 
-            BoardDao boardDao = new BoardDao();
+            ReviewBoardDao boardDao = new ReviewBoardDao();
             boardDao.setConnection(conn);
             boardDao.updateBoard(boardDto);
 
             // 게시글 목록 페이지로 리다이렉트
-            res.sendRedirect(req.getContextPath() + "/freeboardList");
+            res.sendRedirect(req.getContextPath() + "/reviewboardList");
         } catch (FileUploadException | SQLException e) {
             e.printStackTrace();
             // 예외 처리

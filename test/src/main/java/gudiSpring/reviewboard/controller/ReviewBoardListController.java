@@ -1,4 +1,4 @@
-package gudiSpring.freeboard.controller;
+package gudiSpring.reviewboard.controller;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import gudiSpring.freeboard.dao.BoardDao;
-import gudiSpring.freeboard.dto.BoardDto;
+import gudiSpring.reviewboard.dao.ReviewBoardDao;
+import gudiSpring.reviewboard.dto.ReviewBoardDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -17,8 +17,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/freeboardList")
-public class BoardListController extends HttpServlet {
+@WebServlet("/reviewboardList")
+public class ReviewBoardListController extends HttpServlet {
    
     
     
@@ -33,17 +33,17 @@ public class BoardListController extends HttpServlet {
 			// 미리 준비된 DB 객체 불러오기
 			conn = (Connection)sc.getAttribute("conn");
 			
-			BoardDao boardDao = new BoardDao();
+			ReviewBoardDao boardDao = new ReviewBoardDao();
 			boardDao.setConnection(conn);
 			
 			  // 게시글 목록 조회
-            ArrayList<BoardDto> boardList = (ArrayList<BoardDto>) boardDao.selectList();
+            ArrayList<ReviewBoardDto> boardList = (ArrayList<ReviewBoardDto>) boardDao.selectList();
             req.setAttribute("boardList", boardList);
 			
             // JSP 페이지로 포워딩
             res.setContentType("text/html");
             res.setCharacterEncoding("UTF-8");
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/freeboard/boardListView.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/reviewboard/reviewBoardListView.jsp");
             dispatcher.forward(req, res);
 			
 		} catch (Exception e) {

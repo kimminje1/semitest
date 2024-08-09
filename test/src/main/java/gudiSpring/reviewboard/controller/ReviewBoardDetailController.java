@@ -1,14 +1,15 @@
-package gudiSpring.freeboard.controller;
+package gudiSpring.reviewboard.controller;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import gudiSpring.freeboard.dao.BoardDao;
-import gudiSpring.freeboard.dto.BoardDto;
+
 import gudiSpring.comment.dao.CommentDao;
 import gudiSpring.comment.dto.CommentDto;
+import gudiSpring.reviewboard.dao.ReviewBoardDao;
+import gudiSpring.reviewboard.dto.ReviewBoardDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -17,8 +18,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/freeboard/Detail")
-public class BoardDetailController extends HttpServlet {
+@WebServlet("/reviewboard/Detail")
+public class ReviewBoardDetailController extends HttpServlet {
 
 	/**
 	 * 
@@ -42,18 +43,33 @@ public class BoardDetailController extends HttpServlet {
 
           
             //게시글조회
-            BoardDao boardDao = new BoardDao();
+            ReviewBoardDao boardDao = new ReviewBoardDao();
             boardDao.setConnection(conn);
         
-            BoardDto boardDto = boardDao.selectOne(contentNo);
-          
-            	
-            	  // 이미지 경로 변환
-                if (boardDto.getContentFile() != null && !boardDto.getContentFile().isEmpty()) {
-                    String contextPath = req.getContextPath();
-                    String imagePath = contextPath + "/images/" + new File(boardDto.getContentFile()).getName();
-                    boardDto.setContentFile(imagePath);
+            ReviewBoardDto boardDto = boardDao.selectOne(contentNo);
+            
+            // <<ImageDisplayed>> 태그를 <img> 태그로 변환하는 로직 추가 미리보기용
+            // 게시글의 contentText를 가져옴
+            String content = boardDto.getContentText();
+
+            for (String file : boardDto.getContentFiles()) {
+                String imageTag = "<img src='" + req.getContextPath() + "/image/" + file + "' style='max-width:100%;'>";
+                content = content.replace("<<ImageDisplayed>>" + new File(file).getName() + "<<ImageDisplayed>>", imageTag);
+            }
+
+
+            // 변환된 내용을 다시 boardDto에 설정
+            boardDto.setContentText(content);
+            // 이미지 경로 변환
+            if (boardDto.getContentFiles() != null && !boardDto.getContentFiles().isEmpty()) {
+                String contextPath = req.getContextPath();
+                for (int i = 0; i < boardDto.getContentFiles().size(); i++) {
+                    String fileName = new File(boardDto.getContentFiles().get(i)).getName();
+                    boardDto.getContentFiles().set(i, contextPath + "/images/reviewboard/" + fileName);
                 }
+            }
+                
+
                 
             	
             // 댓글 조회
@@ -69,7 +85,7 @@ public class BoardDetailController extends HttpServlet {
             res.setContentType("text/html");
             res.setCharacterEncoding("UTF-8");
             
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/freeboard/boardDetailView.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/reviewboard/reivewBoardDetailView.jsp");
             dispatcher.forward(req, res);
         } catch (Exception e) {
             e.printStackTrace();

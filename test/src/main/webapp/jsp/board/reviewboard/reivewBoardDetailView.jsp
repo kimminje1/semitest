@@ -1,4 +1,4 @@
-<%@ page import="gudiSpring.freeboard.dto.BoardDto" %>
+<%@ page import="gudiSpring.reviewboard.dto.ReviewBoardDto" %>
 <%@ page import="gudiSpring.comment.dto.CommentDto" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
@@ -72,12 +72,11 @@
         }
     </style>
     <script>
-        function confirmDelete(commentNo, contentNo) {
-            if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
-                window.location.href =
-                    '<%= request.getContextPath() %>/deleteComment?commentNo=' + commentNo + '&contentNo=' + contentNo;
-            }
+    function confirmDelete(commentNo, contentNo, boardType) {
+        if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+            window.location.href = '<%= request.getContextPath() %>/deleteComment?commentNo=' + commentNo + '&contentNo=' + contentNo + '&boardType=' + boardType;
         }
+    }
         function validateForm(form) {
             var content = form.commentContent.value.trim();
             if (content === '') {
@@ -92,7 +91,7 @@
         }
         function confirmDeletePost(contentNo) {
             if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
-                window.location.href = '<%= request.getContextPath() %>/deletePost?contentNo=' + contentNo;
+                window.location.href = '<%= request.getContextPath() %>/review/deletePost?contentNo=' + contentNo;
             }
         }
     </script>
@@ -102,34 +101,38 @@
     <!-- 게시글 정보 출력 -->
     <table>
         <%
-            BoardDto boardDto = (BoardDto) request.getAttribute("boardDto");
+            ReviewBoardDto boardDto = (ReviewBoardDto) request.getAttribute("boardDto");
             if (boardDto != null) {
         %>
         <tr>
             <th>번호</th>
             <td><%= boardDto.getContentNo() %></td>
         </tr>
-        <tr>
-            <th>제목</th>
-            <td><%= boardDto.getContentSubject() %> </td>
-        </tr>
+		<tr>
+			<th>제목</th>
+			<td><%=boardDto.getContentSubject()%></td>
+		</tr>
 		<tr>
             <th>내용</th>
               <td>
               <%= boardDto.getContentText()%>
-              <c:if test="${not empty boardDto.contentFile}">
-      <img src="${pageContext.request.contextPath}/image/freeboard/${fn:replace(boardDto.contentFile, '/test/images/', '')}" alt="Attached Image3" />
-			</c:if>
+<%--               <c:if test="${not empty boardDto.contentFiles}"> --%>
+<%--              <c:forEach var="filePaths" items="${boardDto.contentFiles}"> --%>
+<%--       <img src="${pageContext.request.contextPath}/image/${fn:replace(filePaths, '/test/images/', '')}" alt="Attached Image3" /> --%>
+<%-- 			 </c:forEach> --%>
+<%-- 			</c:if> --%>
             </td>
-   
-          
+            
         </tr>
-        <tr>
-            <th>파일</th>
-            <td>
-               <%= boardDto.getContentFile() %>
-            </td>
-        </tr>
+		<tr>
+			<th>파일</th>
+			<td><c:forEach var="file" items="${boardDto.contentFiles}">
+					<p>
+						<c:out value="${file}" />
+					</p>
+					<!-- 각 파일 경로를 출력 나중에지우시오! -->
+				</c:forEach></td>
+		</tr>
 
 		<tr>
             <th>작성일</th>
@@ -145,12 +148,13 @@
         </tr>
     </table>
     <!-- 게시글 수정 버튼 추가 -->
-    <button onclick="location.href='<%= request.getContextPath() %>/freeboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
+    <button onclick="location.href='<%= request.getContextPath() %>/reviewboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
     <!-- 게시글 삭제 버튼 추가 -->
     <button onclick="confirmDeletePost(<%= boardDto.getContentNo() %>)">게시글 삭제</button>
     <h3>댓글 달기</h3>
     <form action="<%=request.getContextPath()%>/addComment" method="post" onsubmit="return validateForm(this);">
         <input type="hidden" name="contentNo" value="<%=boardDto.getContentNo()%>">
+        <input type="hidden" name="boardType" value="reviewboard"> <!-- 게시판 유형 value필수설정-->
         <textarea name="commentContent" rows="4" cols="50" placeholder="댓글을 입력하세요"></textarea>
         <br>
         <input type="submit" value="댓글 추가">
@@ -161,13 +165,14 @@
             <li class="comment">
                 <p><strong>댓글 번호:</strong> <c:out value="${comment.commentNo}"/></p>
                 <p><strong>내용:</strong> <c:out value="${comment.contentComment}"/></p>
-                <p><strong>작성일:</strong> <c:out value="${comment.commentCreDate}"/></p>
-                <button onclick="confirmDelete(${comment.commentNo}, <%= boardDto.getContentNo() %>)">삭제</button>
+                <p><strong>작성일:</strong> <c:out value="${comment.commentCreDate}"/></p> <!-- 게시판 유형 필수설정-->
+                <button onclick="confirmDelete(${comment.commentNo}, <%= boardDto.getContentNo() %>, 'reviewboard')">삭제</button>
                 <button onclick="openEditForm(${comment.commentNo})">수정</button>
                 <!-- 수정 폼 -->
                 <div id="editForm-${comment.commentNo}" class="edit-form">
                     <form action="<%=request.getContextPath()%>/editComment" method="post" onsubmit="return validateForm(this);">
                         <input type="hidden" name="commentNo" value="${comment.commentNo}">
+                 		<input type="hidden" name="boardType" value="reviewboard"> <!-- 게시판 유형 value필수설정-->
                         <input type="hidden" name="contentNo" value="<%=boardDto.getContentNo()%>">
                         <textarea name="commentContent" rows="3">${comment.contentComment}</textarea>
                         <input type="submit" value="수정 완료">
@@ -177,6 +182,6 @@
         </c:forEach>
     </ul>
     <% } %>
-    <a href="<%=request.getContextPath() %>/freeboardList" class="back-link">목록으로 돌아가기</a>
+    <a href="<%=request.getContextPath() %>/reviewboardList" class="back-link">목록으로 돌아가기</a>
 </body>
 </html>

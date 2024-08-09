@@ -22,21 +22,12 @@ public class DeleteCommentController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) 
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		/*
-		 * int commentNo = Integer.parseInt(req.getParameter("commentNo"));
-		 * 
-		 */
-//		int commentNo  = Integer.parseInt(req.getParameter("commentNo"));
-//	        System.out.println("commentNo딜리트잘되나?"+commentNo);
-//	        
-//	       int contentNo =Integer.parseInt(req.getParameter("contentNo"));
-//		 
+	
 		 
 		 
 	        int commentNo = Integer.parseInt(req.getParameter("commentNo"));
 	        int contentNo = Integer.parseInt(req.getParameter("contentNo"));
-	       
+	        String boardType = req.getParameter("boardType");  // 게시판 유형 파라미터 추가
 	        
 	        
 	      
@@ -51,8 +42,7 @@ public class DeleteCommentController extends HttpServlet {
 	            commentDao.setConnection(conn);
 	            commentDao.deleteComment(commentNo);
 
-	            res.sendRedirect(req.getContextPath() + 
-	            		"/freeboard/Detail?contentNo="+contentNo);
+	            res.sendRedirect(req.getContextPath() + "/" + boardType + "/Detail?contentNo=" + contentNo);
 	        } catch (Exception e) {
 	            throw new ServletException("댓글 삭제 오류", e);
 	           

@@ -1,4 +1,4 @@
-package gudiSpring.freeboard.controller;
+package gudiSpring.reviewboard.controller;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.io.File;
@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -14,8 +16,8 @@ import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
-import gudiSpring.freeboard.dao.BoardDao;
-import gudiSpring.freeboard.dto.BoardDto;
+import gudiSpring.reviewboard.dao.ReviewBoardDao;
+import gudiSpring.reviewboard.dto.ReviewBoardDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -24,11 +26,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/freeboard/add")
-public class AddBoardController extends HttpServlet {
+@WebServlet("/reviewboard/add")
+public class ReviewAddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/freeboard";
+    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";//파일저장위치
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -37,7 +39,7 @@ public class AddBoardController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse res) 
             throws ServletException, IOException {
         // 작성 폼으로 이동
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/freeboard/newFreeBoardForm.jsp");
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/reviewboard/newReviewBoardForm.jsp");
         dispatcher.forward(req, res);
     }
 
@@ -66,7 +68,7 @@ public class AddBoardController extends HttpServlet {
 
         String subject = null;
         String text = null;
-        String filePath = DEFAULT_FILE; // 기본 파일 경로 설정
+        List<String> filePaths = new ArrayList<>(); // 여러 파일 경로를 저장할 리스트
         int userNo = 2; // 임시로 사용자 번호 설정
 
         Connection conn = null;
@@ -108,12 +110,13 @@ public class AddBoardController extends HttpServlet {
                                 String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
                                 String uniqueFileName = timeStamp + "_" + fileName;
 
-                                filePath = UPLOAD_DIRECTORY + File.separator + uniqueFileName;
+                                String filePath = UPLOAD_DIRECTORY + File.separator + uniqueFileName;
                                 File storeFile = new File(filePath);
 
                                 // 파일 저장
                                 item.write(storeFile.toPath());
-                                filePath = "freeboard/" + uniqueFileName; // 상대 경로로 변경
+                                filePaths.add("reviewboard/" + uniqueFileName); // 리스트에 파일 경로 추가
+                                text = text.replace("<<ImageDisplayed>>" + fileName + "<<ImageDisplayed>>", "<<ImageDisplayed>>" + uniqueFileName + "<<ImageDisplayed>>");
                             }
                         }
                     }
@@ -122,9 +125,24 @@ public class AddBoardController extends HttpServlet {
          // 디버그 로그 추가
             System.out.println("Subject: " + subject);
             System.out.println("Text: " + text);
-            System.out.println("File Path: " + filePath);
+            System.out.println("File Path: " + filePaths);
 
-          
+         // 선택된 파일 필터링
+            List<String> selectedFiles = req.getParameterValues("selectedFiles") 
+                != null ? Arrays.asList(req.getParameterValues("selectedFiles")) : new ArrayList<>();
+
+            List<String> finalFiles = new ArrayList<>();
+            // 만약 선택된 파일이 없다면 모든 파일을 추가
+            if (selectedFiles.isEmpty()) {
+                finalFiles.addAll(filePaths);
+            } else {
+                for (String filePath : filePaths) {
+                    if (selectedFiles.contains(new File(filePath).getName())) {
+                        finalFiles.add(filePath);
+                    }
+                }
+            }
+            System.out.println("뜨나???"+finalFiles);
 
             if (subject == null || subject.isEmpty()) {
                 throw new ServletException("Subject is missing or empty.");
@@ -133,18 +151,18 @@ public class AddBoardController extends HttpServlet {
                 throw new ServletException("Text is missing or empty.");
             }
             // BoardDto 객체 생성 및 데이터 설정
-            BoardDto boardDto = new BoardDto();
+            ReviewBoardDto boardDto = new ReviewBoardDto();
             boardDto.setContentSubject(subject);
             boardDto.setContentText(text);
-            boardDto.setContentFile(filePath); // 파일 경로 설정
+            boardDto.setContentFiles(finalFiles); // 선택한 여러 파일 경로 리스트 설정 
             boardDto.setUserNo(userNo);
 
-            BoardDao boardDao = new BoardDao();
+            ReviewBoardDao boardDao = new ReviewBoardDao();
             boardDao.setConnection(conn);
             boardDao.addBoard(boardDto);
 
             // 게시글 목록 페이지로 리다이렉트
-            res.sendRedirect(req.getContextPath() + "/freeboardList");
+            res.sendRedirect(req.getContextPath() + "/reviewboardList");
         } catch (FileUploadException | SQLException e) {
             e.printStackTrace();
             // 예외 처리

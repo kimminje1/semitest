@@ -25,7 +25,7 @@ public class AddCommentController extends HttpServlet {
 			HttpServletResponse res) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		int contentNo = Integer.parseInt(req.getParameter("contentNo"));
-		
+		 String boardType = req.getParameter("boardType"); // 게시판 유형 파라미터 추가
         String commentContent = req.getParameter("commentContent");
 
         CommentDto commentDto = new CommentDto();
@@ -43,9 +43,9 @@ public class AddCommentController extends HttpServlet {
             commentDao.setConnection(conn);
             commentDao.addComment(commentDto);
             
-           
-            res.sendRedirect(req.getContextPath() 
-            		+ "/freeboard/Detail?contentNo=" + contentNo);
+            //반드시!!!댓글에 boardType설정해야함!!!
+            String redirectUrl = req.getContextPath() + "/" + boardType + "/Detail?contentNo=" + contentNo;
+            res.sendRedirect(redirectUrl);
 		} catch (Exception e) {
 			  e.printStackTrace();
 			  throw new ServletException("오류 발생", e);

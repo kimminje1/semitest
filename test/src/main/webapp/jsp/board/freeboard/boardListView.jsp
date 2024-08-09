@@ -61,6 +61,9 @@
         function goToNotice() {
             window.location.href = '/test/notices'; // notice 임시
         }
+        function goToReviewBoard() {
+            window.location.href = './reviewboardList'; // 리뷰 게시판으로 이동
+        }
     </script>
 </head>
 <body>
@@ -97,6 +100,8 @@
     </table>
     <div class="button-container">
         <button onclick="goToNotice()">임시공지사항</button>
+       
+		<button onclick="goToReviewBoard()">리뷰 게시판으로 이동</button>
         <button onclick="location.href='<%=request.getContextPath()%>/freeboard/add'">새 글 작성</button>
     </div>
 </body>

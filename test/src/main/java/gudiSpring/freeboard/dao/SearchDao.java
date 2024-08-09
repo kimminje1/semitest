@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gudiSpring.freeboard.dto.BoardDto;
 import gudiSpring.freeboard.dto.FreeBoardDto;
 import gudiSpring.freeboard.dto.MemberFreeBoardDto;
 import gudiSpring.user.dto.MemberDto;
 
-
+//미완성 닉네임을 다른dto에서가져와야함
 public class SearchDao {
 	private Connection connection;
 	public SearchDao() {
@@ -32,14 +33,14 @@ public class SearchDao {
 	public void setConnection(Connection conn) {
 		this.connection = conn;
 	}
-	public ArrayList<FreeBoardDto> getSearch(String searchField, String searchText){//특정한 리스트를 받아서 반환
+	public ArrayList<BoardDto> getSearch(String searchField, String searchText){//특정한 리스트를 받아서 반환
 		
-		ArrayList<FreeBoardDto> list = new ArrayList<FreeBoardDto>();
+		ArrayList<BoardDto> list = new ArrayList<BoardDto>();
 		// 매핑 처리
 		 String column = "";
 	    switch (searchField) {
-	        case "FREE_BOARD_TITLE":
-	            column = "FREE_BOARD_TITLE";
+	        case "CONTENT_SUBJECT":
+	            column = "CONTENT_SUBJECT";
 	            break;
 	        case "FREE_BOARD_WRITER":
 	            column = "FREE_BOARD_WRITER";
@@ -58,31 +59,27 @@ public class SearchDao {
 	        SQL += " ORDER BY FREE_BOARD_ID DESC";
 	    }
 
-	    try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
-	        if (searchField != null && !searchField.trim().isEmpty() && searchText != null && !searchText.trim().isEmpty()) {
-	            // 검색 텍스트 설정
-	            pstmt.setString(1, "%" + searchText.trim() + "%");
-	        }
-	       
-	        ResultSet rs = pstmt.executeQuery();
-		    // ResultSet 처리
-				
-				while(rs.next()) {
-	            FreeBoardDto freeBoardDto = new FreeBoardDto();
-	           
-	            freeBoardDto.setFreeBoardId(rs.getInt("FREE_BOARD_ID")); 
-	            // Assuming column names match
-	            freeBoardDto.setMemberNo(rs.getInt("MEMBER_NO"));
-	            freeBoardDto.setFreeBoardTitle(rs.getString("FREE_BOARD_TITLE"));
-	            freeBoardDto.setFreeBoardContent(rs.getString("FREE_BOARD_CONTENT"));
-	            freeBoardDto.setFreeBoardWriter(rs.getString("FREE_BOARD_WRITER"));
-	            freeBoardDto.setCreateDate(rs.getDate("CREATE_DATE"));
-	            // Use rs.getDate() for Date type
-	            list.add(freeBoardDto);//list에 해당 인스턴스를 담는다.
-	         }         
-	      } catch(SQLException e) {
-	         e.printStackTrace();
-	      }
-	      return list;//ㄱㅔ시글 리스트 반환
-	   }
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + searchText.trim() + "%");
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                BoardDto boardDto = new BoardDto(
+                    rs.getInt("CONTENT_NO"),
+                    rs.getString("CONTENT_SUBJECT"),
+                    rs.getString("CONTENT_TEXT"),
+                    rs.getString("CONTENT_FILE"),
+                    rs.getInt("CONTENT_BOARD_INFO_NO"),
+                    rs.getDate("CONTENT_CRE_DATE"),
+                    rs.getDate("CONTENT_UPDATE_DATE"),
+                    rs.getInt("USER_NO")
+                );
+                list.add(boardDto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return list;
+    }
 }
