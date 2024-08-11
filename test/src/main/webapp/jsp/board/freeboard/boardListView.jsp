@@ -5,69 +5,15 @@
 <head>
     <meta charset="UTF-8">
     <title>게시판 목록</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-        a {
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
-    <script type="text/javascript">
-        function goToNotice() {
-            window.location.href = '/test/notices'; // notice 임시
-        }
-        function goToReviewBoard() {
-            window.location.href = './reviewboardList'; // 리뷰 게시판으로 이동
-        }
-    </script>
+    <!-- CSS 파일 연결 -->
+    <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/board/freeboard/freeBoardList.css">
 </head>
 <body>
-    <h1>게시판 목록</h1>
+     <h2>게시판 목록</h2>
+
+
+    <hr/>
     <table>
         <thead>
             <tr>
@@ -98,11 +44,24 @@
             </c:forEach>
         </tbody>
     </table>
+    <c:if test="${totalPages > 1}">
+        <c:forEach var="i" begin="1" end="${totalPages}">
+            <c:choose>
+                <c:when test="${i == currentPage}">
+                    <strong>${i}</strong>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/freeboardList?page=${i}">${i}</a>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+    </c:if>
     <div class="button-container">
         <button onclick="goToNotice()">임시공지사항</button>
        
 		<button onclick="goToReviewBoard()">리뷰 게시판으로 이동</button>
         <button onclick="location.href='<%=request.getContextPath()%>/freeboard/add'">새 글 작성</button>
     </div>
+      <script src="${pageContext.request.contextPath}/js/board/freeboard/freeBoardList.js"></script>
 </body>
 </html>

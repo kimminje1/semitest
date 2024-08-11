@@ -28,18 +28,28 @@ public class BoardListController extends HttpServlet {
     	// TODO Auto-generated method stub
     	   Connection conn = null;
     	   
-    	   try {ServletContext sc = this.getServletContext();
-   		
-			// 미리 준비된 DB 객체 불러오기
+    	   try {
+    		   ServletContext sc = this.getServletContext();
+    		   // 미리 준비된 DB 객체 불러오기
 			conn = (Connection)sc.getAttribute("conn");
 			
 			BoardDao boardDao = new BoardDao();
 			boardDao.setConnection(conn);
-			
+			//여긴 추후수정
+			   int page = 1; // 기본 페이지 번호
+	            int pageSize = 10; // 페이지당 게시글 수
+	         // 페이지 번호 파라미터 처리
+	            if (req.getParameter("page") != null) {
+	                page = Integer.parseInt(req.getParameter("page"));
+	            }
+	            int totalCount = boardDao.getTotalCount();
+	            int totalPages = (int) Math.ceil(totalCount / (double) pageSize);
+	            int startRow = (page - 1) * pageSize;
 			  // 게시글 목록 조회
-            ArrayList<BoardDto> boardList = (ArrayList<BoardDto>) boardDao.selectList();
-            req.setAttribute("boardList", boardList);
-			
+	            List<BoardDto> boardList = boardDao.selectList(startRow, pageSize);
+	            req.setAttribute("boardList", boardList);
+	            req.setAttribute("currentPage", page);
+	            req.setAttribute("totalPages", totalPages);
             // JSP 페이지로 포워딩
             res.setContentType("text/html");
             res.setCharacterEncoding("UTF-8");

@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ReviewAddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";//파일저장위치
+    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";//파일저장위치
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -102,21 +102,24 @@ public class ReviewAddBoardController extends HttpServlet {
                         // 파일 이름이 비어있지 않으면 파일 저장 처리
                         if (!fileName.isEmpty()) {
                             // 이미지 파일만 업로드 가능하도록 확장자 검사
-                            if (!(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".webp"))
-                            		|| fileName.endsWith(".jpeg") || fileName.endsWith(".gif")) {
-                                throw new ServletException("이미지 파일만 업로드 가능합니다.");
-                            } else {
+                        	if (!(fileName.endsWith(".png") || fileName.endsWith(".jpg") || fileName.endsWith(".webp")
+                        		     || fileName.endsWith(".jpeg") || fileName.endsWith(".gif"))) {
+                        		    throw new ServletException("이미지 파일만 업로드 가능합니다.");
+                        		}
+                        		else {
                                 // 타임스탬프를 추가하여 파일 이름을 유니크하게 만듦
-                                String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-                                String uniqueFileName = timeStamp + "_" + fileName;
+                        			String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+                                    String uniqueFileName = timeStamp + "_" + fileName;
 
-                                String filePath = UPLOAD_DIRECTORY + File.separator + uniqueFileName;
-                                File storeFile = new File(filePath);
+                                    String filePath = UPLOAD_DIRECTORY + File.separator + uniqueFileName;
+                                    File storeFile = new File(filePath);
 
-                                // 파일 저장
-                                item.write(storeFile.toPath());
-                                filePaths.add("reviewboard/" + uniqueFileName); // 리스트에 파일 경로 추가
-                                text = text.replace("<<ImageDisplayed>>" + fileName + "<<ImageDisplayed>>", "<<ImageDisplayed>>" + uniqueFileName + "<<ImageDisplayed>>");
+                                    // 파일 저장
+                                    item.write(storeFile.toPath());
+                                    filePaths.add("reviewboard/" + uniqueFileName); // 리스트에 파일 경로 추가
+
+                                    // 본문에 이미지 태그 추가
+                                    text += "<br/><img src='" + req.getContextPath() + "/images/" + filePaths.get(filePaths.size() - 1) + "' alt='" + fileName + "'/><br/>";
                             }
                         }
                     }

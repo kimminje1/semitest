@@ -1,61 +1,25 @@
-/**
- * 
- */
+// 첨부파일을 저장할 배열
+let filesArray = [];
 
-	let filesArray = [];
-    // 미리보기 유지
-
-        function handleFileSelect(event) {
-            let newFiles = Array.from(event.target.files);
-
-            // 새로운 파일만 배열에 추가
-            newFiles.forEach(function(newFile) {
-                if (!filesArray.some(file => file.name === newFile.name)) {
-                    filesArray.push(newFile);
-                }
-            });
-
-            displaySelectedFiles();
-        }
-
-    // 선택된 파일을 본문에 삽입
-    function insertImagesIntoContent() {
-        var checkboxes = document.querySelectorAll('input[name="selectedFiles"]:checked');
-        var content = document.getElementById('contentText');
-	
-        checkboxes.forEach(function(checkbox) {
-            var fileName = checkbox.value;
-            console.log("Selected file name:", fileName);
-            var imgTag = "<<ImageDisplayed>>" + fileName + "<<ImageDisplayed>>";
-            content.value += imgTag + "\n";
-        });
-    }
-
-    // 파일 초기화 문제 해결
-
-
-
-  
-    // 첨부파일 미리보기
-    function displaySelectedFiles() {
+// 파일 선택 시 호출되는 함수
+function handleFileSelect(event) {
+    const files = Array.from(event.target.files);
     const output = document.getElementById('file-list');
     output.innerHTML = ''; // 기존 미리보기 초기화
 
-    filesArray.forEach((file) => {
-        let fileItem = document.createElement('div');
+    files.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'image-preview';
 
-        let reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = function(e) {
-            let img = document.createElement('img');
+            const img = document.createElement('img');
             img.src = e.target.result;
-            img.style.width = "100px";
-            img.style.height = "100px";
-            img.style.marginRight = "10px";
 
-            let checkbox = document.createElement('input');
+            const checkbox = document.createElement('input');
             checkbox.type = "checkbox";
             checkbox.name = "selectedFiles";
-            checkbox.value = file.name;
+            checkbox.value = index;  // 파일 인덱스를 값으로 설정
 
             fileItem.appendChild(checkbox);
             fileItem.appendChild(img);
@@ -64,4 +28,41 @@
 
         reader.readAsDataURL(file);
     });
+
+    filesArray = files; // 선택된 파일을 배열에 저장
 }
+
+// 선택된 파일만 업로드
+document.querySelector('form').addEventListener('submit', function(event) {
+    const checkboxes = document.querySelectorAll('input[name="selectedFiles"]:checked');
+    const formData = new FormData();
+
+    checkboxes.forEach(checkbox => {
+        const file = filesArray[checkbox.value];
+        formData.append('contentFile', file);
+    });
+
+    // 제목과 내용도 추가
+    formData.append('contentSubject', document.getElementById('subject').value);
+    formData.append('contentText', document.getElementById('contentText').value);
+
+    // AJAX를 통해 파일 업로드 처리
+    fetch(contextPath + '/reviewboard/add', {
+        method: 'POST',
+        body: formData
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = contextPath + '/reviewboardList';
+        } else {
+            return response.text().then(text => { 
+                console.log('서버 응답:', text);
+                alert('파일 업로드 실패: ' + text); 
+            });
+        }
+    }).catch(error => {
+        console.error('업로드 중 오류 발생:', error);
+        alert('파일 업로드 중 오류가 발생했습니다: ' + error.message);
+    });
+
+    event.preventDefault(); // 기본 폼 제출 방지
+});

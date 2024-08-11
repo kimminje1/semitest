@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ReviewImageController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String filename = request.getPathInfo().substring(1); // URL에서 파일 이름 추출
-        File file = new File("D:/GudiSpring/img/reviewboard", filename); // 전체 파일 경로
+        File file = new File("C:/GudiSpring/img/reviewboard", filename); // 전체 파일 경로
 
         // 파일 이름만 추출
         String simpleFileName = file.getName();

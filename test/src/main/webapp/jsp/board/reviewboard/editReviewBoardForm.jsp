@@ -6,58 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 수정</title>
-     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }
-        form {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
-            background-color: #5c6bc0;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #3949ab;
-        }
-        a {
-            display: block;
-            margin-top: 20px;
-            text-align: center;
-            text-decoration: none;
-            color: #5c6bc0;
-            font-weight: bold;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+    <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/board/reviewboard/editReviewBoard.css">
+        <style>
+       
     </style>
-     <script>
+    <script>
         function validateFileInput() {
             const fileInput = document.getElementById('file');
             const filePath = fileInput.value;
@@ -69,6 +23,32 @@
                 return false;
             }
             return true;
+        }
+        function deleteFile(fileName, contentNo) {
+            if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
+                fetch(`${window.location.origin}${window.location.pathname}/deleteFile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        contentNo: contentNo,
+                        fileName: fileName
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`file-${fileName}`).remove();
+                    } else {
+                        alert('파일 삭제에 실패했습니다.');
+                    }
+                })
+                .catch(error => {
+                    console.error('파일 삭제 중 오류가 발생했습니다.', error);
+                    alert('파일 삭제 중 오류가 발생했습니다.');
+                });
+            }
         }
     </script>
 </head>
@@ -83,15 +63,22 @@
         <label for="text">내용:</label>
         <textarea id="text" name="contentText" rows="5" required>${boardDto.contentText}</textarea>
 
-        <label for="file">첨부 파일: .png .jpeg .jpg .gif .webp만 업로드 가능합니다</label>
-        <input type="file" id="file" name="contentFile"
-        accept="image/jpeg, image/jpg, image/png, image/gif, image/webp" multiple><br>
-		
-		  <c:if test="${not empty boardDto.contentFile}">
-            <label class="delete-file">
-                <input type="checkbox" id="deleteFile" name="deleteFile" value="true"> 기존 파일 삭제
-            </label>
+        <label for="file">첨부 파일: .png, .jpeg, .jpg, .gif, .webp만 업로드 가능합니다</label>
+        <input type="file" id="file" name="contentFile" accept="image/jpeg, image/jpg, image/png, image/gif, image/webp" multiple><br>
+
+          <!-- 기존 파일 리스트 -->
+        <c:if test="${not empty boardDto.contentFiles}">
+            <div class="file-list">
+                <p>기존 파일:</p>
+                <c:forEach var="file" items="${boardDto.contentFiles}">
+                    <div id="file-${file}" class="file-item">
+                        <span>${file}</span>
+                        <button type="button" onclick="deleteFile('${file}', ${boardDto.contentNo})">삭제</button>
+                    </div>
+                </c:forEach>
+            </div>
         </c:if>
+
         <input type="submit" value="수정 완료">
     </form>
     <a href="<%= request.getContextPath() %>/reviewboardList">목록으로 돌아가기</a>

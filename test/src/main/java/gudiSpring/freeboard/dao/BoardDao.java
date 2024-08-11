@@ -17,24 +17,41 @@ public class BoardDao {
 	public void setConnection(Connection conn) {
 		this.connection = conn;
 	}
+	  // 페이징을 위한 전체 게시글 수 조회-페이징용
+    public int getTotalCount() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM BOARD_CONTENT WHERE CONTENT_BOARD_INFO_NO = 2";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        }
+    }
 	//전체조회
-	public List<BoardDto> selectList() throws Exception {
+	public List<BoardDto> selectList(int startRow, int pageSize) throws Exception {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
 		try {
-			String sql = "";
-			sql += "SELECT CONTENT_NO, CONTENT_SUBJECT, "
-					+ " CONTENT_TEXT, CONTENT_FILE, CONTENT_BOARD_INFO_NO, "
-					+ " CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO ";
-			sql += "FROM BOARD_CONTENT ";
-			sql += "WHERE CONTENT_BOARD_INFO_NO = 2  ";
-			sql += "ORDER BY CONTENT_NO DESC";
+	        String sql = "";
+	        sql += "SELECT * FROM ( ";
+	        sql += "   SELECT ROWNUM AS rnum, a.* FROM ( ";
+	        sql += "       SELECT CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, ";
+	        sql += "       CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO ";
+	        sql += "       FROM BOARD_CONTENT ";
+	        sql += "       WHERE CONTENT_BOARD_INFO_NO = 2 ";
+	        sql += "       ORDER BY CONTENT_NO DESC ";
+	        sql += "   ) a ";
+	        sql += "   WHERE ROWNUM <= ? ";  // endRow
+	        sql += ") ";
+	        sql += "WHERE rnum >= ?";  // startRow
 
 			pstmt = connection.prepareStatement(sql);
-			//반드시 로그인연결한후 지울것;
-//			 pstmt.setInt(1, 1);
-//			 AND CONTENT_NO = ?
+			 pstmt = connection.prepareStatement(sql);
+		        pstmt.setInt(1, startRow + pageSize - 1);  // endRow 계산
+		        pstmt.setInt(2, startRow);  // startRow 지정
+			
 			rs = pstmt.executeQuery();
 
 			

@@ -4,56 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>새 게시글 작성</title>
+        <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/board/freeboard/newFreeBoard.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h2 {
-            color: #333;
-        }
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-        }
-        input[type="text"], textarea, input[type="file"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #4CAF50;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+      
     </style>
 </head>
 <body>
@@ -74,5 +28,6 @@ enctype="multipart/form-data"  >
     <input type="submit" value="작성 완료">
 </form>
     <a href="<%= request.getContextPath() %>/freeboardList">목록으로 돌아가기</a>
+    <script src="${pageContext.request.contextPath}/js/board/freeboard/newFreeBoard.js"></script>
 </body>
 </html>

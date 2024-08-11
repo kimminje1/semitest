@@ -1,37 +1,44 @@
 package gudiSpring.freeboard.controller;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.nio.file.*;
+import java.io.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
-@WebServlet("/image/freeboard/*")
 public class ImageController extends HttpServlet {
+    // 기본 경로 설정
+    private static final String BASE_DIRECTORY = "D:/GudiSpring/img/freeboard/";
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String filename = request.getPathInfo().substring(1); // URL에서 파일 이름 추출
-        File file = new File("D:/GudiSpring/img/freeboard", filename); // 전체 파일 경로
+        // 클라이언트로부터 파일 이름을 파라미터로 받아옴
+        String fileName = request.getParameter("fileName");
 
-        // 파일 이름만 추출
-        String simpleFileName = file.getName();
+        // 파일 이름이 비어 있거나 잘못된 경우 오류 처리
+        if (fileName == null || fileName.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "파일 이름을 지정해야 합니다.");
+            return;
+        }
 
-        System.out.println("파일 이름 확인: " + simpleFileName);
+        // 전체 파일 경로 생성
+        String filePath = BASE_DIRECTORY + fileName;
+        Path path = Paths.get(filePath);
 
-        response.setHeader("Content-Type", getServletContext().getMimeType(simpleFileName));
-        response.setHeader("Content-Length", String.valueOf(file.length()));
-        response.setHeader("Content-Disposition", "inline; filename=\"" + simpleFileName + "\"");
-        Files.copy(file.toPath(), response.getOutputStream()); // 파일 내용 전송
+        // 파일 존재 여부 확인 및 처리
+        if (Files.exists(path)) {
+            // 파일 MIME 타입 설정 (이미지 파일일 경우)
+            response.setContentType(Files.probeContentType(path));
+            
+            // 파일 크기 설정
+            response.setContentLength((int) Files.size(path));
+
+            // 파일을 응답 스트림에 쓰기
+            Files.copy(path, response.getOutputStream());
+            
+            // 스트림 플러시
+            response.getOutputStream().flush();
+        } else {
+            // 파일이 존재하지 않을 경우 404 오류 반환
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "파일을 찾을 수 없습니다.");
+        }
     }
-        
-        //     <img src="/test/image/freeboard/sana.webp" alt="Sana Image">
-//	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//	    String fullPath = request.getPathInfo().substring(1);
-//	    String filename = new File(fullPath).getName(); // 파일 이름만 추출
-//	    request.setAttribute("filename", filename); // 요청 속성에 저장
-//	    request.getRequestDispatcher("/jsp/board/boardDetailView.jsp").forward(request, response); // JSP 페이지로 전달
-//	}
-
 }

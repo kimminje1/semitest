@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/freeboard";
+    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/freeboard";
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -114,6 +114,8 @@ public class AddBoardController extends HttpServlet {
                                 // 파일 저장
                                 item.write(storeFile.toPath());
                                 filePath = "freeboard/" + uniqueFileName; // 상대 경로로 변경
+                             // 본문에 이미지 태그 추가
+                                text += "<br/><img src='" + req.getContextPath() + "/images/" + filePath + "' alt='" + fileName + "'/><br/>";
                             }
                         }
                     }
