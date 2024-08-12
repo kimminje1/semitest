@@ -37,12 +37,13 @@ public class DeleteCommentController extends HttpServlet {
 	            // ServletContext에서 Connection 가져오기
 	            ServletContext sc = this.getServletContext();
 	            conn = (Connection) sc.getAttribute("conn");
-
+	            
+	            
 	            CommentDao commentDao = new CommentDao();
 	            commentDao.setConnection(conn);
 	            commentDao.deleteComment(commentNo);
 
-	            res.sendRedirect(req.getContextPath() + "/" + boardType + "/Detail?contentNo=" + contentNo);
+	            res.sendRedirect(req.getContextPath() + "/board/" + boardType + "/detail?contentNo=" + contentNo);
 	        } catch (Exception e) {
 	            throw new ServletException("댓글 삭제 오류", e);
 	           

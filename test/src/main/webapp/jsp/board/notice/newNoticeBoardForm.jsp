@@ -65,7 +65,7 @@ input[type="submit"]:hover {
 <script type="text/javascript">
         var contextPath = "<%= request.getContextPath() %>";
 </script>
- <script defer src="<%= request.getContextPath() %>/js/board/reviewboard/newReviewBorad.js"></script>
+<%--  <script defer src="<%= request.getContextPath() %>/js/board/reviewboard/newReviewBorad.js"></script> --%>
     
 </head>
 
@@ -75,25 +75,24 @@ input[type="submit"]:hover {
 <div id="main-container">
 
 
-    <h2>새 게시글 작성</h2>
- <form action="<%= request.getContextPath() %>/reviewboard/add" method="post" enctype="multipart/form-data">
-        <label for="subject">제목:</label>
-        <input type="text" id="subject" name="contentSubject" required>
+    <div id="main-container">
+        <h2>Add New Notice</h2>
+        <form action="${pageContext.request.contextPath}/board/notice/add" method="post" enctype="multipart/form-data">
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="contentSubject" required>
 
-        <label for="contentText">내용:</label>
-        <textarea id="contentText" name="contentText" rows="10" style="width:100%;"></textarea>
-    
-        <label for="file">첨부 파일: .png .jpeg .jpg .gif .webp만 업로드 가능합니다</label>
-        <input type="file" id="file" name="contentFile" accept="image/jpeg, image/jpg, image/png, image/gif, image/webp" multiple onchange="handleFileSelect(event);"><br>
-        <div id="file-list"></div>
-    
-        
-   
-	 
-    
-    <input type="submit" value="작성 완료">
-</form>
-    <a href="<%= request.getContextPath() %>/board/reviewboard/list">목록으로 돌아가기</a>
+            <label for="contentText">Content:</label>
+            <textarea id="contentText" name="contentText" rows="10"></textarea>
+<!-- 	첨부파일기능구현할것 -->
+            <label for="file">Attachment: Only .png .jpeg .jpg .gif .webp files are allowed</label>
+            <input type="file" id="file" name="contentFile" accept="image/jpeg, image/jpg, image/png, image/gif, image/webp" multiple onchange="handleFileSelect(event);">
+            <div id="file-list"></div>
+
+            <input type="submit" value="Submit">
+        </form>
+       
+    </div>
+    <a href="<%= request.getContextPath() %>/board/notice/list">목록으로 돌아가기</a>
 </div>
 <jsp:include page="/jsp/common/footer.jsp"/>
 </body>

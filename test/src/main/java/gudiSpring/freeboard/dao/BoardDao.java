@@ -211,8 +211,29 @@ public class BoardDao {
 	}
 
 
-
-
+	 // 공지사항 조회 메서드
+    public BoardDto getNotice(int boardInfoNo, int contentNo) throws SQLException {
+        String sql = "SELECT * FROM BOARD_CONTENT WHERE CONTENT_BOARD_INFO_NO = ? AND CONTENT_NO = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, boardInfoNo);
+            pstmt.setInt(2, contentNo);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new BoardDto(
+                        rs.getInt("CONTENT_NO"),
+                        rs.getString("CONTENT_SUBJECT"),
+                        rs.getString("CONTENT_TEXT"),
+                        rs.getString("CONTENT_FILE"),
+                        rs.getInt("CONTENT_BOARD_INFO_NO"),
+                        rs.getDate("CONTENT_CRE_DATE"),
+                        rs.getDate("CONTENT_UPDATE_DATE"),
+                        rs.getInt("USER_NO")
+                    );
+                }
+            }
+        }
+        return null;
+    }
 
 
 

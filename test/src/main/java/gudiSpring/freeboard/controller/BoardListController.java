@@ -35,6 +35,11 @@ public class BoardListController extends HttpServlet {
 			
 			BoardDao boardDao = new BoardDao();
 			boardDao.setConnection(conn);
+			  
+			 // 공지사항 조회 (CONTENT_BOARD_INFO_NO = 4 AND CONTENT_NO = 2)
+            BoardDto notice = boardDao.getNotice(1, 2);
+            req.setAttribute("notice", notice);
+			
 			//여긴 추후수정
 			   int page = 1; // 기본 페이지 번호
 	            int pageSize = 10; // 페이지당 게시글 수
@@ -57,7 +62,8 @@ public class BoardListController extends HttpServlet {
             dispatcher.forward(req, res);
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			 e.printStackTrace();  // 예외를 출력해 문제를 파악
+			    throw new ServletException(e);  // 혹은 새로운 예외를 던져 JSP에 에러를 표시
 		}
     	   
     	   

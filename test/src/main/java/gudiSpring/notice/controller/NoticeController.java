@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/notices")
+@WebServlet("/board/notice/list")
 @SuppressWarnings("serial")
 public class NoticeController extends HttpServlet {
 		
@@ -32,7 +32,7 @@ public class NoticeController extends HttpServlet {
         req.setAttribute("notices", notices);
 
         // JSP 페이지로 포워딩하여 결과를 표시합니다.
-        req.getRequestDispatcher("/jsp/notice/notice.jsp").forward(req, res);
+        req.getRequestDispatcher("/jsp/board/notice/notice.jsp").forward(req, res);
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

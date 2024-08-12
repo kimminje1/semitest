@@ -10,10 +10,13 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 상세 조회</title>
+<link rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+   <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/board/reviewboard/reviewBoardDetail.css">
-<link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/common/common.css">
+
 <style>
 </style>
 <script>
@@ -21,55 +24,53 @@
     </script>
 </head>
 <body>
+ <div id="wrapper">
 <jsp:include page="/jsp/common/header.jsp"  />
+    
+    <!-- 헤더와 본문 사이에 구분을 주기 위한 div -->
+    <div id="header-spacer"></div>
+
 <div id="main-container">
 	<h2>게시글 상세 조회</h2>
 	<!-- 게시글 정보 출력 -->
-	<table>
+	
 		<%
             ReviewBoardDto boardDto = (ReviewBoardDto) request.getAttribute("boardDto");
             if (boardDto != null) {
         %>
-		<tr>
-			<th>번호</th>
-			<td><%= boardDto.getContentNo() %></td>
-		</tr>
-		<tr>
-			<th>제목</th>
-			<td><%=boardDto.getContentSubject()%></td>
-		</tr>
-		<tr>
-			<td><c:forEach var="file" items="${boardDto.contentFiles}">
-					<!-- 'test' 부분을 제거한 경로로 이미지를 출력 -->
-					<img src="${fn:replace(file, '/test', '')}" alt="Attached Image" />
-				</c:forEach> ${boardDto.contentText}</td>
-		</tr>
+		 <!-- 게시글 정보 -->
+        <table class="board-info-table">
+            <tr>
+                <th>번호</th>
+                <td><%= boardDto.getContentNo() %></td>
+                <th>작성일</th>
+                <td><%=boardDto.getContentCreDate()%></td>
+            </tr>
+            <tr>
+                <th>제목</th>
+                <td colspan="3"><%=boardDto.getContentSubject()%></td>
+            </tr>
+            <tr>
+                <th>수정일</th>
+                <td><%= boardDto.getContentUpdateDate() %></td>
+                <th>작성자</th>
+                <td><%= boardDto.getUserNo() %></td>
+            </tr>
+        </table>
 
-
-
-		<tr>
-			<th>파일</th>
-			<td><c:forEach var="file" items="${boardDto.contentFiles}">
-					<p>
-						<c:out value="${file}" />
-					</p>
-					<!-- 각 파일 경로를 출력 나중에지우시오! -->
-				</c:forEach></td>
-		</tr>
-
-		<tr>
-			<th>작성일</th>
-			<td><%=boardDto.getContentCreDate()%></td>
-		</tr>
-		<tr>
-			<th>수정일</th>
-			<td><%= boardDto.getContentUpdateDate() %></td>
-		</tr>
-		<tr>
-			<th>작성자</th>
-			<td><%= boardDto.getUserNo() %></td>
-		</tr>
-	</table>
+        <!-- 게시글 내용 -->
+        <div class="board-content">
+            <c:forEach var="file" items="${boardDto.contentFiles}">
+                <img src="${fn:replace(file, '/test', '')}" alt="Attached Image" />
+            </c:forEach>
+            <p class="content-text"><%=boardDto.getContentText()%></p>
+        </div>
+		
+		
+	
+		
+		
+	
 	<!-- 게시글 수정 버튼 추가 -->
 	<button
 		onclick="location.href='<%= request.getContextPath() %>/board/reviewboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
@@ -124,9 +125,11 @@
 		</c:forEach>
 	</ul>
 	<% } %>
-	<a href="<%=request.getContextPath() %>/reviewboardList"
+	<a href="<%=request.getContextPath() %>/board/reviewboard/list"
 		class="back-link">목록으로 돌아가기</a>
 		</div>
 		<jsp:include page="/jsp/common/footer.jsp"/>
+		</div>
+<!-- 		헤더고정용 -->
 </body>
 </html>

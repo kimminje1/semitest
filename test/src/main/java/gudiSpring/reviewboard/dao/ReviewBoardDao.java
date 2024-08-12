@@ -198,7 +198,22 @@ public class ReviewBoardDao {
 	        throw e;
 	    }
 	}
-
+	
+	
+	// 게시글에 첨부된 파일 경로를 가져오는 메서드
+	public List<String> getFilePathsByContentNo(int contentNo) throws SQLException {
+	    String sql = "SELECT CONTENT_FILE FROM BOARD_CONTENT WHERE CONTENT_NO = ?";
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setInt(1, contentNo);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                String contentFile = rs.getString("CONTENT_FILE");
+	                return contentFile != null ? Arrays.asList(contentFile.split(",")) : new ArrayList<>();
+	            }
+	        }
+	    }
+	    return new ArrayList<>();
+	}
 
 
 

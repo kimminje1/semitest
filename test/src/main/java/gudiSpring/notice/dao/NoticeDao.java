@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import gudiSpring.freeboard.dto.BoardDto;
 import gudiSpring.notice.dto.NoticeDto;
 
 public class NoticeDao {
@@ -92,6 +93,51 @@ public class NoticeDao {
 	    return notice;
 	}
 	
-	
+	// 게시글 추가
+		  public void addNoticeBoard(NoticeDto noticeDto) throws SQLException {
+		        String sql = "INSERT INTO BOARD_CONTENT (CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO) "
+		                   + "VALUES (CONTENT_NO_SEQ.NEXTVAL, ?, ?, ?, 1, SYSDATE, SYSDATE, ?)";
+	//자유게시판이니 2번,다른게시판으로수정시 수정할것
+		        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+		            pstmt.setString(1, noticeDto.getContentSubject());
+		            pstmt.setString(2, noticeDto.getContentText());
+		            pstmt.setString(3, noticeDto.getContentFile());//추후설정필요
+		            pstmt.setInt(4, noticeDto.getUserNo()); //추후설정필요
+
+		            pstmt.executeUpdate();
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		            throw e;
+		        }
+		    }
+		  
+		  public void deletePost(int contentNo) throws SQLException {
+		        String sql = "DELETE FROM BOARD_CONTENT WHERE CONTENT_NO = ?";
+		        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+		            pstmt.setInt(1, contentNo);
+		            pstmt.executeUpdate();
+		        }
+		    }
+		// BoardDao.java
+
+		// 게시글 수정 메소드
+		public void updateNoticeBoard(BoardDto boardDto) throws SQLException {
+		    String sql = "UPDATE BOARD_CONTENT SET CONTENT_SUBJECT = ?,"
+		    		+ " CONTENT_TEXT = ?, CONTENT_FILE = ?, "
+		    		+ "CONTENT_UPDATE_DATE = SYSDATE WHERE CONTENT_NO = ?";
+		    
+		    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+		        pstmt.setString(1, boardDto.getContentSubject());
+		        pstmt.setString(2, boardDto.getContentText());
+		        pstmt.setString(3, boardDto.getContentFile());
+		        pstmt.setInt(4, boardDto.getContentNo());
+		        
+		        pstmt.executeUpdate();
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		        throw e;
+		    }
+		}
+
 	
 }

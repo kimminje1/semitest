@@ -44,7 +44,7 @@ public class AddCommentController extends HttpServlet {
             commentDao.addComment(commentDto);
             
             //반드시!!!댓글에 boardType설정해야함!!!
-            String redirectUrl = req.getContextPath() + "/" + boardType + "/Detail?contentNo=" + contentNo;
+            String redirectUrl = req.getContextPath() + "/board/" + boardType + "/detail?contentNo=" + contentNo;
             res.sendRedirect(redirectUrl);
 		} catch (Exception e) {
 			  e.printStackTrace();

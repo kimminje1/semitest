@@ -6,10 +6,13 @@
     <meta charset="UTF-8">
     <title>게시판 목록</title>
     <!-- CSS 파일 연결 -->
+    <link rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+   <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
     <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/freeboard/freeBoardList.css">
-     <link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/common/common.css">
+    
 </head>
 <script type="text/javascript">
     var contextPath = "<%= request.getContextPath() %>";
@@ -20,6 +23,7 @@
      <div id="main-container">
      <h2>게시판 목록</h2>
     <hr/>
+    
     <table>
         <thead>
             <tr>
@@ -34,6 +38,8 @@
             </tr>
         </thead>
         <tbody>
+        <!-- 공지사항 영역 -->
+    
             <c:forEach var="board" items="${boardList}">
                 <tr>
                     <td><c:out value="${board.contentNo}" /></td>
@@ -50,6 +56,7 @@
             </c:forEach>
         </tbody>
     </table>
+    <div class="pagination">
     <c:if test="${totalPages > 1}">
         <c:forEach var="i" begin="1" end="${totalPages}">
             <c:choose>
@@ -62,6 +69,7 @@
             </c:choose>
         </c:forEach>
     </c:if>
+    </div>
     <div class="button-container">
         <button onclick="goToNotice()">임시공지사항</button>
        

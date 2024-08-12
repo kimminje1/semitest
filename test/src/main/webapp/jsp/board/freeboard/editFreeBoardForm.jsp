@@ -7,10 +7,13 @@
     <meta charset="UTF-8">
     <title>게시글 수정</title>
     <!-- CSS 파일 연결 -->
-    <link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/board/freeboard/editFreeBoard.css">
+    <link rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
    <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/common/common.css">
+    <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/board/freeboard/editFreeBoard.css">
+ 
  <script defer src="${pageContext.request.contextPath}/js/board/freeboard/editFreeBoard.js"></script>
 </head>
 <body>

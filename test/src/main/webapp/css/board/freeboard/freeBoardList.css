@@ -56,12 +56,13 @@ a:hover {
 .button-container button:hover {
     background-color: #3949ab;
 }
-       
+/*        얘네가 페이징버튼 */
         .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
+    display: flex;
+    justify-content: center;
+    margin: 20px auto; /* auto로 설정해 가운데 정렬을 강화 */
+    width: 100%; /* 필요시 추가 */
+}
         .pagination a {
             margin: 0 5px;
             padding: 8px 16px;

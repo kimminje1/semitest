@@ -1,21 +1,20 @@
-@charset "UTF-8";
-
-       
   body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
+    margin: 20px;
+    background-color: #f4f4f9;
 }
 
-h1 {
+h2 {
     color: #333;
+    margin-bottom: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
@@ -29,40 +28,52 @@ th {
     color: white;
 }
 
+a {
+    color: #5c6bc0;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 .button-container {
     margin-top: 20px;
 }
 
-button {
-    background-color: #4CAF50;
+.button-container button {
+    padding: 10px 15px;
+    background-color: #5c6bc0;
     color: white;
-    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
 }
 
-button:hover {
-    background-color: #45a049;
+.button-container button:hover {
+    background-color: #3949ab;
 }
-  .pagination {
-    text-align: center;
-    margin-top: 20px;
-}
+/*        얘네가 페이징버튼 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+           
+             margin: 20px auto; /* 위아래 margin 추가, 왼쪽과 오른쪽 margin을 auto로 설정하여 가운데 정렬 */
 
-.pagination a {
-    margin: 0 5px;
-    text-decoration: none;
-    color: #007BFF;
-}
-
-.pagination a:hover {
-    text-decoration: underline;
-}
-
-.pagination strong {
-    margin: 0 5px;
-    font-weight: bold;
-    color: #000;
-}
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }

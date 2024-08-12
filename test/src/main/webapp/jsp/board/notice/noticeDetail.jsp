@@ -52,7 +52,7 @@
         </tr>
     </table>
     <div class="buttons">
-        <a href="notices">목록으로 돌아가기</a>
+        <a href="/test/board/notice/list">목록으로 돌아가기</a>
         <a href="/test/board/freeboard/list">자유게시판으로 가기</a>
     </div>
     </div>

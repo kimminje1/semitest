@@ -3,6 +3,7 @@ package gudiSpring.freeboard.controller;
 import java.io.IOException;
 import java.sql.Connection;
 
+import gudiSpring.comment.dao.CommentDao;
 import gudiSpring.freeboard.dao.BoardDao;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -28,7 +29,12 @@ public class DeletePostController extends HttpServlet{
 	        try {
 	            ServletContext sc = this.getServletContext();
 	            conn = (Connection) sc.getAttribute("conn");
-
+	         // 댓글 먼저 삭제
+				CommentDao commentDao = new CommentDao();
+				commentDao.setConnection(conn);
+				commentDao.deleteCommentsByContentNo(contentNo);
+				
+			// 게시글삭제	
 	            BoardDao boardDao = new BoardDao();
 	            boardDao.setConnection(conn);
 	            boardDao.deletePost(contentNo);

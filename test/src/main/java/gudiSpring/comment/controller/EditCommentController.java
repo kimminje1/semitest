@@ -48,7 +48,7 @@ public class EditCommentController extends HttpServlet {
 	            commentDao.updateComment(commentDto);
 	           
 
-	            res.sendRedirect(req.getContextPath() + "/" + boardType + "/Detail?contentNo=" + contentNo);	
+	            res.sendRedirect(req.getContextPath() + "/board/" + boardType + "/detail?contentNo=" + contentNo);	
 	        } catch (Exception e) {
 	            throw new ServletException("댓글 수정 오류", e);
 	        }

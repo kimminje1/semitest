@@ -31,7 +31,7 @@
             <c:forEach var="notice" items="${notices}">
                 <tr>
                     <td>${notice.contentNo}</td>
-                    <td><a href="noticedetail?contentNo=${notice.contentNo}">${notice.contentSubject}</a></td>
+                    <td><a href="/test/board/notice/detail?contentNo=${notice.contentNo}">${notice.contentSubject}</a></td>
                     <td>${notice.contentText}</td>
                     <td>${notice.contentFile}</td>
                     <td>${notice.contentCreDate}</td>
@@ -42,6 +42,10 @@
     </table>
     <div class="back-link">
         <a href="/test/board/freeboard/list">자유게시판으로 가기</a>
+    </div>
+     <!-- 공지사항 추가 버튼 -->
+    <div class="add-notice-button">
+        <button onclick="location.href='${pageContext.request.contextPath}/board/notice/add'">공지사항 추가</button>
     </div>
     </div>
     <jsp:include page="/jsp/common/footer.jsp"/>

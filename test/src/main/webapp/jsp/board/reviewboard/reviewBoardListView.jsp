@@ -5,10 +5,13 @@
 <head>
     <meta charset="UTF-8">
     <title>게시판 목록</title>
+    <link rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+   <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
     <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/reviewboard/reviewBoardList.css">
-    <link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/common/common.css">
+    
     <style>
         
     </style>
@@ -25,7 +28,6 @@
                 <th>번호</th>
                 <th>제목</th>
                 <th>내용</th>
-                <th>첨부파일</th>
                 <th>게시판 정보 번호</th>
                 <th>작성일</th>
                 <th>수정일</th>
@@ -40,7 +42,6 @@
                         <c:out value="${board.contentSubject}" /></a>
                     </td>
                     <td><c:out value="${board.contentText}" /></td>
-                    <td><c:out value="${board.contentFiles}" /></td>
                     <td><c:out value="${board.contentBoardInfoNo}" /></td>
                     <td><c:out value="${board.contentCreDate}" /></td>
                     <td><c:out value="${board.contentUpdateDate}" /></td>

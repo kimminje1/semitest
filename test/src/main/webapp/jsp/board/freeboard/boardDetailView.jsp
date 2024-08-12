@@ -10,10 +10,13 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 상세 조회</title>
+<link rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+   <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
  <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/freeboard/freeBoardDetail.css">
-<link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/common/common.css">
+
 </head>
 <script type="text/javascript">var contextPath = "<%= request.getContextPath() %>";
 
@@ -81,38 +84,37 @@
 		<br> <input type="submit" value="댓글 추가">
 	</form>
 	<h3>댓글</h3>
-	<ul class="comments">
-		<c:forEach var="comment" items="${commentList}">
-			<li class="comment">
-				<p>
-					<strong>댓글 번호:</strong>
-					<c:out value="${comment.commentNo}" />
-				</p>
-				<p>
-					<strong>내용:</strong>
-					<c:out value="${comment.contentComment}" />
-				</p>
-				<p>
-					<strong>작성일:</strong>
-					<c:out value="${comment.commentCreDate}" />
-				</p>
-				<button
-					onclick="confirmDelete(${comment.commentNo}, <%= boardDto.getContentNo() %>, 'freeboard')">삭제</button>
-				<button onclick="openEditForm(${comment.commentNo})">수정</button> <!-- 수정 폼 -->
-				<div id="editForm-${comment.commentNo}" class="edit-form">
-					<form action="<%=request.getContextPath()%>/editComment"
-						method="post" onsubmit="return validateForm(this);">
-						<input type="hidden" name="commentNo" value="${comment.commentNo}">
-						<input type="hidden" name="contentNo"
-							value="<%=boardDto.getContentNo()%>"> <input
-							type="hidden" name="boardType" value="freeboard">
-						<textarea name="commentContent" rows="3">${comment.contentComment}</textarea>
-						<input type="submit" value="수정 완료">
-					</form>
-				</div>
-			</li>
-		</c:forEach>
-	</ul>
+<ul class="comments" id="comment-list">
+    <c:forEach var="comment" items="${commentList}">
+        <li class="comment">
+            <p>
+                <strong>댓글 번호:</strong>
+                <c:out value="${comment.commentNo}" />
+            </p>
+            <p>
+                <strong>내용:</strong>
+                <c:out value="${comment.contentComment}" />
+            </p>
+            <p>
+                <strong>작성일:</strong>
+                <c:out value="${comment.commentCreDate}" />
+            </p>
+            <button onclick="confirmDelete(${comment.commentNo}, <%= boardDto.getContentNo() %>, 'freeboard')">삭제</button>
+            <button onclick="openEditForm(${comment.commentNo})">수정</button> <!-- 수정 폼 -->
+            <div id="editForm-${comment.commentNo}" class="edit-form" style="display:none;">
+                <form action="<%=request.getContextPath()%>/editComment" method="post" onsubmit="return validateForm(this);">
+                    <input type="hidden" name="commentNo" value="${comment.commentNo}">
+                    <input type="hidden" name="contentNo" value="<%=boardDto.getContentNo()%>">
+                    <input type="hidden" name="boardType" value="freeboard">
+                    <textarea name="commentContent" rows="3">${comment.contentComment}</textarea>
+                    <input type="submit" value="수정 완료">
+                </form>
+            </div>
+        </li>
+    </c:forEach>
+</ul>
+<div id="loading" style="display: none;">Loading...</div>
+
 	<% } %>
 	<a href="<%=request.getContextPath() %>/board/freeboard/list"
 		class="back-link">목록으로 돌아가기</a>

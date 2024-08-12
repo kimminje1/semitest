@@ -4,10 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>새 게시글 작성</title>
+    <link rel="stylesheet"
+   href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
+   <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
         <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/freeboard/newFreeBoard.css">
-    <link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/common/common.css">
+  
     <style>
       
     </style>
