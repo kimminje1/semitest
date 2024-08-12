@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/deletePost")
+@WebServlet("/board/freeboard/delete")
 public class DeletePostController extends HttpServlet{
 
 	/**
@@ -33,7 +33,7 @@ public class DeletePostController extends HttpServlet{
 	            boardDao.setConnection(conn);
 	            boardDao.deletePost(contentNo);
 
-	            res.sendRedirect(req.getContextPath() + "/freeboardList");
+	            res.sendRedirect(req.getContextPath() + "/board/freeboard/list");
 	}catch (Exception e) {
         throw new ServletException("게시글 삭제 중 오류 발생", e);
     }

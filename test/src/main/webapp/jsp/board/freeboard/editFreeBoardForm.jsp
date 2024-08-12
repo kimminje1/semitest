@@ -9,11 +9,15 @@
     <!-- CSS 파일 연결 -->
     <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/freeboard/editFreeBoard.css">
-   
+   <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
+ <script defer src="${pageContext.request.contextPath}/js/board/freeboard/editFreeBoard.js"></script>
 </head>
 <body>
+ <jsp:include page="/jsp/common/header.jsp" />
+<div id="main-container">
     <h2>게시글 수정</h2>
-    <form action="<%= request.getContextPath() %>/freeboard/edit" method="post" enctype="multipart/form-data">
+    <form action="<%= request.getContextPath() %>/board/freeboard/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="contentNo" value="${boardDto.contentNo}">
         	
         <label for="subject">제목:</label>
@@ -33,7 +37,8 @@
         </c:if>
         <input type="submit" value="수정 완료">
     </form>
-    <a href="<%= request.getContextPath() %>/freeboardList">목록으로 돌아가기</a>
-          <script src="${pageContext.request.contextPath}/js/board/freeboard/editFreeBoard.js"></script>
+    <a href="<%= request.getContextPath() %>/board/freeboard/list">목록으로 돌아가기</a>
+         </div>
+<jsp:include page="/jsp/common/footer.jsp"/>
 </body>
 </html>

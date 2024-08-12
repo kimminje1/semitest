@@ -8,51 +8,19 @@
     <title>게시글 수정</title>
     <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/reviewboard/editReviewBoard.css">
+       <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css"> 
         <style>
        
     </style>
     <script>
-        function validateFileInput() {
-            const fileInput = document.getElementById('file');
-            const filePath = fileInput.value;
-            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif|\.webp)$/i;
-
-            if (!allowedExtensions.exec(filePath)) {
-                alert('이미지 파일만 업로드 가능합니다. (jpg, jpeg, png, gif, webp)');
-                fileInput.value = '';
-                return false;
-            }
-            return true;
-        }
-        function deleteFile(fileName, contentNo) {
-            if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
-                fetch(`${window.location.origin}${window.location.pathname}/deleteFile`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        contentNo: contentNo,
-                        fileName: fileName
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById(`file-${fileName}`).remove();
-                    } else {
-                        alert('파일 삭제에 실패했습니다.');
-                    }
-                })
-                .catch(error => {
-                    console.error('파일 삭제 중 오류가 발생했습니다.', error);
-                    alert('파일 삭제 중 오류가 발생했습니다.');
-                });
-            }
-        }
+    var contextPath = "<%= request.getContextPath() %>";
     </script>
+    <script  defer src="${pageContext.request.contextPath}/js/board/reviewboard/editReviewBoard.js"></script>
 </head>
 <body>
+<jsp:include page="/jsp/common/header.jsp"  />
+<div id="main-container">
     <h2>게시글 수정</h2>
     <form action="<%= request.getContextPath() %>/reviewboard/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="contentNo" value="${boardDto.contentNo}">
@@ -81,6 +49,8 @@
 
         <input type="submit" value="수정 완료">
     </form>
-    <a href="<%= request.getContextPath() %>/reviewboardList">목록으로 돌아가기</a>
+    <a href="<%= request.getContextPath() %>/board/reviewboard/list">목록으로 돌아가기</a>
+  </div>
+  <jsp:include page="/jsp/common/footer.jsp"/>
 </body>
 </html>

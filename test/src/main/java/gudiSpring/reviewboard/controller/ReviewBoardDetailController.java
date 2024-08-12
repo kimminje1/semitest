@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/reviewboard/Detail")
+@WebServlet("/board/reviewboard/detail")
 public class ReviewBoardDetailController extends HttpServlet {
 
 	/**
@@ -52,11 +52,7 @@ public class ReviewBoardDetailController extends HttpServlet {
             // 게시글의 contentText를 가져옴
             String content = boardDto.getContentText();
 
-            for (String file : boardDto.getContentFiles()) {
-                String imageTag = "<img src='" + req.getContextPath() + "/image/" + file + "' style='max-width:100%;'>";
-                content = content.replace("<<ImageDisplayed>>" + new File(file).getName() + "<<ImageDisplayed>>", imageTag);
-            }
-
+           
 
             // 변환된 내용을 다시 boardDto에 설정
             boardDto.setContentText(content);

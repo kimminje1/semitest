@@ -25,11 +25,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/reviewboard/edit")
+@WebServlet("/board/reviewboard/edit")
 public class EditReviewBoardController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";
+	private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";
 	private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
 	private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -170,7 +170,7 @@ public class EditReviewBoardController extends HttpServlet {
 			boardDao.updateBoard(boardDto);
 
 			// 게시글 목록 페이지로 리다이렉트
-			res.sendRedirect(req.getContextPath() + "/reviewboardList");
+			res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");
 		} catch (FileUploadException | SQLException e) {
 			e.printStackTrace();
 			// 예외 처리

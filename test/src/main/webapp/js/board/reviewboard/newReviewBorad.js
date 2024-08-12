@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 // 첨부파일을 저장할 배열
 let filesArray = [];
 
@@ -15,6 +18,10 @@ function handleFileSelect(event) {
         reader.onload = function(e) {
             const img = document.createElement('img');
             img.src = e.target.result;
+            img.alt = file.name;
+             img.style.width = '100px';  // 미리보기 이미지의 너비를 100px로 설정
+            img.style.height = '100px'; // 미리보기 이미지의 높이를 100px로 설정
+            img.style.objectFit = 'cover'; // 이미지가 부모 요소의 크기에 맞게 잘리도록 설정
 
             const checkbox = document.createElement('input');
             checkbox.type = "checkbox";
@@ -47,21 +54,15 @@ document.querySelector('form').addEventListener('submit', function(event) {
     formData.append('contentText', document.getElementById('contentText').value);
 
     // AJAX를 통해 파일 업로드 처리
-    fetch(contextPath + '/reviewboard/add', {
+    fetch(contextPath + '/board/reviewboard/add', {
         method: 'POST',
         body: formData
     }).then(response => {
         if (response.ok) {
-            window.location.href = contextPath + '/reviewboardList';
+            window.location.href = contextPath + '/board/reviewboard/list';
         } else {
-            return response.text().then(text => { 
-                console.log('서버 응답:', text);
-                alert('파일 업로드 실패: ' + text); 
-            });
+            alert('파일 업로드 실패');
         }
-    }).catch(error => {
-        console.error('업로드 중 오류 발생:', error);
-        alert('파일 업로드 중 오류가 발생했습니다: ' + error.message);
     });
 
     event.preventDefault(); // 기본 폼 제출 방지

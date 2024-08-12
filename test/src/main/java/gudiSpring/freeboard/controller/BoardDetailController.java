@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/freeboard/Detail")
+@WebServlet("/board/freeboard/detail")
 public class BoardDetailController extends HttpServlet {
 
 	/**
@@ -48,12 +48,11 @@ public class BoardDetailController extends HttpServlet {
             BoardDto boardDto = boardDao.selectOne(contentNo);
           
             	
-            	  // 이미지 경로 변환
-                if (boardDto.getContentFile() != null && !boardDto.getContentFile().isEmpty()) {
-                    String contextPath = req.getContextPath();
-                    String imagePath = contextPath + "/images/" + new File(boardDto.getContentFile()).getName();
-                    boardDto.setContentFile(imagePath);
-                }
+            if (boardDto.getContentFile() != null && !boardDto.getContentFile().isEmpty()) {
+                String imagePath = "/freeboard/" + new File(boardDto.getContentFile()).getName();
+                boardDto.setContentFile(imagePath);
+            }
+
                 
             	
             // 댓글 조회

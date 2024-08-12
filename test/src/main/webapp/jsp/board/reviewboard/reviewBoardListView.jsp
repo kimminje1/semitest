@@ -7,19 +7,17 @@
     <title>게시판 목록</title>
     <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/reviewboard/reviewBoardList.css">
+    <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
     <style>
         
     </style>
-    <script type="text/javascript">
-        function goToNotice() {
-            window.location.href = '/test/notices'; // notice 임시
-        }
-        function goToFreeBoard() {
-            window.location.href = './freeboardList'; // 자유 게시판으로 이동
-        }
-    </script>
+  
+    <script defer src="${pageContext.request.contextPath}/js/board/reviewboard/reviewBoardList.js"></script>
 </head>
 <body>
+<jsp:include page="/jsp/common/header.jsp"  />
+<div id="main-container">
     <h1>게시판 목록</h1>
     <table>
         <thead>
@@ -38,7 +36,7 @@
             <c:forEach var="board" items="${boardList}">
                 <tr>
                     <td><c:out value="${board.contentNo}" /></td>
-                    <td><a href="/test/reviewboard/Detail?contentNo=${board.contentNo}">
+                    <td><a href="/test/board/reviewboard/detail?contentNo=${board.contentNo}">
                         <c:out value="${board.contentSubject}" /></a>
                     </td>
                     <td><c:out value="${board.contentText}" /></td>
@@ -51,11 +49,30 @@
             </c:forEach>
         </tbody>
     </table>
+      <!-- 페이징 네비게이션 -->
+    <c:if test="${totalPages > 1}">
+        <div class="pagination">
+            <c:forEach var="i" begin="1" end="${totalPages}">
+                <c:choose>
+                    <c:when test="${i == currentPage}">
+                        <strong>${i}</strong>
+                    </c:when>
+                    <c:otherwise>
+                       <a href="${pageContext.request.contextPath}/board/reviewboard/list?page=${i}">${i}</a>
+
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+        </div>
+    </c:if>
+    
     <div class="button-container">
         <button onclick="goToNotice()">임시공지사항</button>
        
-		<button onclick="goToFreeBoard()">자유 게시판으로 이동</button>
-        <button onclick="location.href='<%=request.getContextPath()%>/reviewboard/add'">새 글 작성</button>
+		<button onclick="location.href='<%=request.getContextPath()%>/board/freeboard/list'">자유 게시판으로 이동</button>
+        <button onclick="location.href='<%=request.getContextPath()%>/board/reviewboard/add'">새 글 작성</button>
     </div>
+    <jsp:include page="/jsp/common/footer.jsp"/>
+</div>
 </body>
 </html>

@@ -24,7 +24,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/freeboard/edit")
+@WebServlet("/board/freeboard/edit")
 public class EditBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -168,7 +168,7 @@ public class EditBoardController extends HttpServlet {
             boardDao.updateBoard(boardDto);
 
             // 게시글 목록 페이지로 리다이렉트
-            res.sendRedirect(req.getContextPath() + "/freeboardList");
+            res.sendRedirect(req.getContextPath() + "/board/freeboard/list");
         } catch (FileUploadException | SQLException e) {
             e.printStackTrace();
             // 예외 처리

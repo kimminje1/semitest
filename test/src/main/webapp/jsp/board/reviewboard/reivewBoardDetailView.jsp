@@ -10,36 +10,19 @@
 <head>
 <meta charset="UTF-8">
 <title>게시글 상세 조회</title>
-<style>
+<link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/css/board/reviewboard/reviewBoardDetail.css">
 <link rel="stylesheet" type="text/css" 
-    href="${pageContext.request.contextPath}/css/board/reviewboard/reviewBoardDetail.css">
+    href="${pageContext.request.contextPath}/css/common/common.css">
+<style>
 </style>
 <script>
-    function confirmDelete(commentNo, contentNo, boardType) {
-        if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
-            window.location.href = '<%= request.getContextPath() %>/deleteComment?commentNo=' + commentNo + '&contentNo=' + contentNo + '&boardType=' + boardType;
-        }
-    }
-        function validateForm(form) {
-            var content = form.commentContent.value.trim();
-            if (content === '') {
-                alert('댓글 내용을 입력하세요.');
-                return false;
-            }
-            return true;
-        }
-        function openEditForm(commentNo) {
-            var form = document.getElementById('editForm-' + commentNo);
-            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-        }
-        function confirmDeletePost(contentNo) {
-            if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
-                window.location.href = '<%= request.getContextPath() %>/review/deletePost?contentNo=' + contentNo;
-            }
-        }
+  
     </script>
 </head>
 <body>
+<jsp:include page="/jsp/common/header.jsp"  />
+<div id="main-container">
 	<h2>게시글 상세 조회</h2>
 	<!-- 게시글 정보 출력 -->
 	<table>
@@ -56,12 +39,10 @@
 			<td><%=boardDto.getContentSubject()%></td>
 		</tr>
 		<tr>
-			<th>내용</th>
 			<td><c:forEach var="file" items="${boardDto.contentFiles}">
-					<img src="${file}" alt="Attached Image" />
-				</c:forEach>
-				 <%=boardDto.getContentText()%> 
-			</td>
+					<!-- 'test' 부분을 제거한 경로로 이미지를 출력 -->
+					<img src="${fn:replace(file, '/test', '')}" alt="Attached Image" />
+				</c:forEach> ${boardDto.contentText}</td>
 		</tr>
 
 
@@ -91,10 +72,12 @@
 	</table>
 	<!-- 게시글 수정 버튼 추가 -->
 	<button
-		onclick="location.href='<%= request.getContextPath() %>/reviewboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
+		onclick="location.href='<%= request.getContextPath() %>/board/reviewboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
 	<!-- 게시글 삭제 버튼 추가 -->
-	<button onclick="confirmDeletePost(<%= boardDto.getContentNo() %>)">게시글
+	<button
+		onclick="location.href='<%= request.getContextPath() %>/board/reviewboard/delete?contentNo=<%= boardDto.getContentNo() %>'">게시글
 		삭제</button>
+
 	<h3>댓글 달기</h3>
 	<form action="<%=request.getContextPath()%>/addComment" method="post"
 		onsubmit="return validateForm(this);">
@@ -143,5 +126,7 @@
 	<% } %>
 	<a href="<%=request.getContextPath() %>/reviewboardList"
 		class="back-link">목록으로 돌아가기</a>
+		</div>
+		<jsp:include page="/jsp/common/footer.jsp"/>
 </body>
 </html>

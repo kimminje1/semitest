@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/review/deletePost")
+@WebServlet("/board/reviewboard/delete")
 public class ReviewDeletePostController extends HttpServlet{
 
 	/**
@@ -33,7 +33,7 @@ public class ReviewDeletePostController extends HttpServlet{
 	            boardDao.setConnection(conn);
 	            boardDao.deletePost(contentNo);
 
-	            res.sendRedirect(req.getContextPath() + "/reviewboardList");
+	            res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");
 	}catch (Exception e) {
         throw new ServletException("게시글 삭제 중 오류 발생", e);
     }

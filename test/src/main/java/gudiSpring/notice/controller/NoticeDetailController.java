@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/noticeDetail")
+@WebServlet("/noticedetail")
 public class NoticeDetailController extends HttpServlet {
 	
 	@Override
@@ -33,7 +33,7 @@ public class NoticeDetailController extends HttpServlet {
 
 	        req.setAttribute("notice", notice);
 
-	    req.getRequestDispatcher("/jsp/notice/noticeDetail.jsp").forward(req, res);
+	    req.getRequestDispatcher("/jsp/notice/noticedetail.jsp").forward(req, res);
 	    }
 	
 

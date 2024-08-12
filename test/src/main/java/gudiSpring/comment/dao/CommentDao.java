@@ -111,4 +111,47 @@ public class CommentDao {
 			}
 		}//finally해제
 	}
+	   // 댓글 페이징 조회
+	public List<CommentDto> getCommentsByContentNo(int contentNo, int startRow, int pageSize) throws SQLException {
+        String sql = "SELECT * FROM ( " +
+                     "  SELECT ROWNUM AS rnum, a.* FROM ( " +
+                     "    SELECT COMMENT_NO, CONTENT_NO, CONTENT_COMMENT, COMMENT_CRE_DATE, COMMENT_UPDATE_DATE " +
+                     "    FROM BOARD_CONTENT_COMMENT " +
+                     "    WHERE CONTENT_NO = ? " +
+                     "    ORDER BY COMMENT_CRE_DATE ASC " +
+                     "  ) a " +
+                     "  WHERE ROWNUM <= ? " +  // 페이지 끝 번호
+                     ") WHERE rnum >= ?";      // 페이지 시작 번호
+        List<CommentDto> comments = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, contentNo);
+            pstmt.setInt(2, startRow + pageSize - 1);  // 끝 번호 계산
+            pstmt.setInt(3, startRow);  // 시작 번호 설정
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                CommentDto commentDto = new CommentDto();
+                commentDto.setCommentNo(rs.getInt("COMMENT_NO"));
+                commentDto.setContentNo(rs.getInt("CONTENT_NO"));
+                commentDto.setContentComment(rs.getString("CONTENT_COMMENT"));
+                commentDto.setCommentCreDate(rs.getDate("COMMENT_CRE_DATE"));
+                commentDto.setCommentUpdateDate(rs.getDate("COMMENT_UPDATE_DATE"));
+                comments.add(commentDto);
+            }
+        }
+        return comments;
+    }
+
+    // 댓글 총 개수 조회 (페이징을 위해 필요)
+    public int getTotalCommentsByContentNo(int contentNo) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM BOARD_CONTENT_COMMENT WHERE CONTENT_NO = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, contentNo);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        }
+        return 0;
+    }
 }//dao

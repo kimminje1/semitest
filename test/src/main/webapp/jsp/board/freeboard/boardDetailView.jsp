@@ -12,9 +12,18 @@
 <title>게시글 상세 조회</title>
  <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/freeboard/freeBoardDetail.css">
+<link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
 </head>
+<script type="text/javascript">var contextPath = "<%= request.getContextPath() %>";
+
+</script>
+<script defer src="${pageContext.request.contextPath}/js/board/freeboard/freeBoardDetail.js"></script>
 <body>
-	<h2>게시글 상세 조회</h2>
+ <jsp:include page="/jsp/common/header.jsp"  />
+  
+<div id="main-container">
+ 	<h2>게시글 상세 조회</h2>
 	<!-- 게시글 정보 출력 -->
 	<table>
 		<%
@@ -32,6 +41,8 @@
 		<tr>
 			<th>내용</th>
 			<td><%= boardDto.getContentText() %>
+			
+			
 			
 		</tr>
 		<tr>
@@ -54,7 +65,7 @@
 	</table>
 	<!-- 게시글 수정 버튼 추가 -->
 	<button
-		onclick="location.href='<%= request.getContextPath() %>/freeboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
+		onclick="location.href='<%= request.getContextPath() %>/board/freeboard/edit?contentNo=<%= boardDto.getContentNo() %>'">수정</button>
 	<!-- 게시글 삭제 버튼 추가 -->
 	<button onclick="confirmDeletePost(<%= boardDto.getContentNo() %>)">게시글
 		삭제</button>
@@ -103,9 +114,10 @@
 		</c:forEach>
 	</ul>
 	<% } %>
-	<a href="<%=request.getContextPath() %>/freeboardList"
+	<a href="<%=request.getContextPath() %>/board/freeboard/list"
 		class="back-link">목록으로 돌아가기</a>
 		
-		<script src="${pageContext.request.contextPath}/js/board/freeboard/freeBoardDetail.js"></script>
+		</div>
+<jsp:include page="/jsp/common/footer.jsp"/>
 </body>
 </html>

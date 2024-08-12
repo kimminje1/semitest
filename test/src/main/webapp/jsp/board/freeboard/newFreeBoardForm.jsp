@@ -6,14 +6,18 @@
     <title>새 게시글 작성</title>
         <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/board/freeboard/newFreeBoard.css">
+    <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css">
     <style>
       
     </style>
+    <script defer src="${pageContext.request.contextPath}/js/board/freeboard/newFreeBoard.js"></script>
 </head>
 <body>
-    <h2>새 게시글 작성</h2>
+ <jsp:include page="/jsp/common/header.jsp" />
+ <div id="main-container">    <h2>새 게시글 작성</h2>
 
-<form action="<%= request.getContextPath() %>/freeboard/add" method="post" 
+<form action="<%= request.getContextPath() %>/board/freeboard/add" method="post" 
 enctype="multipart/form-data"  >
     <label for="subject">제목:</label>
     <input type="text" id="subject" name="contentSubject" required>
@@ -27,7 +31,10 @@ enctype="multipart/form-data"  >
 
     <input type="submit" value="작성 완료">
 </form>
-    <a href="<%= request.getContextPath() %>/freeboardList">목록으로 돌아가기</a>
-    <script src="${pageContext.request.contextPath}/js/board/freeboard/newFreeBoard.js"></script>
+    <a href="<%= request.getContextPath() %>/board/freeboard/list">목록으로 돌아가기</a>
+    </div>
+    
+	<jsp:include page="/jsp/common/footer.jsp"/>
+  
 </body>
 </html>

@@ -26,11 +26,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/reviewboard/add")
+@WebServlet("/board/reviewboard/add")
 public class ReviewAddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";//파일저장위치
+    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";//파일저장위치
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -119,7 +119,12 @@ public class ReviewAddBoardController extends HttpServlet {
                                     filePaths.add("reviewboard/" + uniqueFileName); // 리스트에 파일 경로 추가
 
                                     // 본문에 이미지 태그 추가
-                                    text += "<br/><img src='" + req.getContextPath() + "/images/" + filePaths.get(filePaths.size() - 1) + "' alt='" + fileName + "'/><br/>";
+                                 // 본문에 이미지 태그 추가
+                                    text += "<br/><img src='/images/" 
+                                 + filePaths.get(filePaths.size() - 1) + "' alt='"
+                                    		+ fileName + "' style='width:500px; height:300px; object-fit:cover;'/><br/>";
+
+
                             }
                         }
                     }
@@ -165,7 +170,7 @@ public class ReviewAddBoardController extends HttpServlet {
             boardDao.addBoard(boardDto);
 
             // 게시글 목록 페이지로 리다이렉트
-            res.sendRedirect(req.getContextPath() + "/reviewboardList");
+            res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");
         } catch (FileUploadException | SQLException e) {
             e.printStackTrace();
             // 예외 처리

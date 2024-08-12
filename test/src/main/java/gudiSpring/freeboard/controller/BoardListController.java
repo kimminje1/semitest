@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-@WebServlet("/freeboardList")
+@WebServlet("/board/freeboard/list")
 public class BoardListController extends HttpServlet {
    
     

@@ -5,78 +5,16 @@
 <head>
     <meta charset="EUC-KR">
     <title>공지사항 게시판</title>
+    <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/board/noticeboard/noticeBoardList.css">
+       <link rel="stylesheet" type="text/css" 
+    href="${pageContext.request.contextPath}/css/common/common.css"> 
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            color: #5c6bc0;
-        }
-
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        th, td {
-            padding: 12px;
-            border: 1px solid #ddd;
-            text-align: center;
-        }
-
-        th {
-            background-color: #3949ab;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #e8eaf6;
-        }
-
-        a {
-            text-decoration: none;
-            color: #3949ab;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 16px;
-        }
-
-        .back-link a {
-            color: #3949ab;
-            padding: 10px 20px;
-            border: 1px solid #3949ab;
-            border-radius: 4px;
-            background-color: #fff;
-        }
-
-        .back-link a:hover {
-            background-color: #3949ab;
-            color: #fff;
-        }
+        
     </style>
 </head>
 <body>
+ <div id="main-container">
     <h1>공지사항 목록</h1>
     <table>
         <thead>
@@ -93,7 +31,7 @@
             <c:forEach var="notice" items="${notices}">
                 <tr>
                     <td>${notice.contentNo}</td>
-                    <td><a href="noticeDetail?contentNo=${notice.contentNo}">${notice.contentSubject}</a></td>
+                    <td><a href="noticedetail?contentNo=${notice.contentNo}">${notice.contentSubject}</a></td>
                     <td>${notice.contentText}</td>
                     <td>${notice.contentFile}</td>
                     <td>${notice.contentCreDate}</td>
@@ -103,7 +41,9 @@
         </tbody>
     </table>
     <div class="back-link">
-        <a href="/test/freeboardList">자유게시판으로 가기</a>
+        <a href="/test/board/freeboard/list">자유게시판으로 가기</a>
     </div>
+    </div>
+    <jsp:include page="/jsp/common/footer.jsp"/>
 </body>
 </html>

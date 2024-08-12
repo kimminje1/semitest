@@ -24,11 +24,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/freeboard/add")
+@WebServlet("/board/freeboard/add")
 public class AddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/freeboard";
+    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/freeboard";
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -115,7 +115,8 @@ public class AddBoardController extends HttpServlet {
                                 item.write(storeFile.toPath());
                                 filePath = "freeboard/" + uniqueFileName; // 상대 경로로 변경
                              // 본문에 이미지 태그 추가
-                                text += "<br/><img src='" + req.getContextPath() + "/images/" + filePath + "' alt='" + fileName + "'/><br/>";
+                             
+                                text += "<br/><img src='/images/" + filePath + "' alt='" + uniqueFileName + "'/><br/>";
                             }
                         }
                     }
@@ -146,7 +147,7 @@ public class AddBoardController extends HttpServlet {
             boardDao.addBoard(boardDto);
 
             // 게시글 목록 페이지로 리다이렉트
-            res.sendRedirect(req.getContextPath() + "/freeboardList");
+            res.sendRedirect(req.getContextPath() + "/board/freeboard/list");
         } catch (FileUploadException | SQLException e) {
             e.printStackTrace();
             // 예외 처리
