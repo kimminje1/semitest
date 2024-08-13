@@ -60,9 +60,9 @@
 
         <!-- 게시글 내용 -->
         <div class="board-content">
-            <c:forEach var="file" items="${boardDto.contentFiles}">
-                <img src="${fn:replace(file, '/test', '')}" alt="Attached Image" />
-            </c:forEach>
+<%--             <c:forEach var="file" items="${boardDto.contentFiles}"> --%>
+<%--                 <img src="${fn:replace(file, '/test', '')}" alt="Attached Image" /> --%>
+<%--             </c:forEach> --%>
             <p class="content-text"><%=boardDto.getContentText()%></p>
         </div>
 		

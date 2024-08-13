@@ -44,7 +44,36 @@ public class ReviewBoardListController extends HttpServlet {
 			boardDao.setConnection(conn);
 			 // 게시글 목록 조회
 			List<ReviewBoardDto> boardList = boardDao.selectList(start, end);
-   
+			
+			for (ReviewBoardDto board : boardList) {
+			    
+			} 	
+			
+			for (ReviewBoardDto board : boardList) {
+				// 게시판 이름 설정
+				String boardInfoName = boardDao.getBoardInfoName(board.getContentBoardInfoNo());
+			    board.setBoardInfoName(boardInfoName);
+			 // 이미지 태그를 <사진>으로 대체이거없으면 <img~~~로 도배됨>
+			    String contentText = board.getContentText();
+			    if (contentText != null) {
+			        // <img> 태그를 <사진>으로 대체
+			        contentText = contentText.replaceAll("<img[^>]*>", "<사진>");
+			        
+			        // <p><br></p> 태그를 공백으로 대체
+			        contentText = contentText.replaceAll("<p><br></p>", "");
+
+			        // 변환된 텍스트를 다시 설정
+			        board.setContentText(contentText);
+			    }
+			    
+			    // 작성자의 닉네임을 가져와 설정
+	            String nickname = boardDao.getNicknameByUserNo(board.getUserNo());
+	            board.setNickname(nickname);
+			    
+	            
+			    
+			}
+
 			int totalRecords = boardDao.getTotalCount();
             int totalPages = (int) Math.ceil(totalRecords * 1.0 / recordsPerPage);
 			  // 게시글 목록 조회

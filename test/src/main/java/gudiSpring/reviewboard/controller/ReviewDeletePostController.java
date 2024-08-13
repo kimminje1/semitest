@@ -33,12 +33,17 @@ public class ReviewDeletePostController extends HttpServlet{
 	            conn = (Connection) sc.getAttribute("conn");
 	            
 	            
+	            // 댓글 먼저 삭제
+				CommentDao commentDao = new CommentDao();
+				commentDao.setConnection(conn);
+				commentDao.deleteCommentsByContentNo(contentNo);
 
 	            // 파일 경로 가져오기
 	            ReviewBoardDao boardDao = new ReviewBoardDao();
 	            boardDao.setConnection(conn);
 	            List<String> filePaths = boardDao.getFilePathsByContentNo(contentNo);
 	            System.out.println("filePaths"+filePaths);
+	            
 	            // 파일 삭제
 	            for (String filePath : filePaths) {
 	                File file = new File("D:/GudiSpring/img/" + filePath); // 경로 수정 필요
@@ -46,14 +51,9 @@ public class ReviewDeletePostController extends HttpServlet{
 	                    file.delete();
 	                }
 	            }
-	            
-	            // 댓글 먼저 삭제
-				CommentDao commentDao = new CommentDao();
-				commentDao.setConnection(conn);
-				commentDao.deleteCommentsByContentNo(contentNo);
-	            //게시글삭제
-//	            ReviewBoardDao boardDao = new ReviewBoardDao();
-//	            boardDao.setConnection(conn);
+	           
+	            //게시글삭제+이미지삭제
+
 	            boardDao.deletePost(contentNo);
 
 	            res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");

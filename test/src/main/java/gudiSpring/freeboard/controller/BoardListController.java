@@ -37,8 +37,8 @@ public class BoardListController extends HttpServlet {
 			boardDao.setConnection(conn);
 			  
 			 // 공지사항 조회 (CONTENT_BOARD_INFO_NO = 4 AND CONTENT_NO = 2)
-            BoardDto notice = boardDao.getNotice(1, 2);
-            req.setAttribute("notice", notice);
+          
+           
 			
 			//여긴 추후수정
 			   int page = 1; // 기본 페이지 번호

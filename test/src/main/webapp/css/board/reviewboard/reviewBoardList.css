@@ -1,31 +1,31 @@
-  body {
+  #bodystyle {
     font-family: Arial, sans-serif;
     margin: 20px;
     background-color: #f4f4f9;
 }
-
-h2 {
+body.bodystyle #main-container {
+     flex: 1; /* 남은 공간을 차지하도록 설정 */
+    padding: 20px; /* 페이지 양옆 여백 */
+    box-sizing: border-box;
+     height: auto; /* 800삭제 */
+  
+    
+}
+#title {
     color: #333;
     margin-bottom: 20px;
 }
-
-table {
+/* boardListTable의 스타일 */
+#boardListTable {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #f8f8f8;
 }
 
-th, td {
-    padding: 12px;
+#boardListTable th, #boardListTable td {
+    padding: 10px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #5c6bc0;
-    color: white;
+    border-bottom: 1px solid #ccc;
 }
 
 a {
@@ -54,6 +54,7 @@ a:hover {
 .button-container button:hover {
     background-color: #3949ab;
 }
+
 /*        얘네가 페이징버튼 */
         .pagination {
             display: flex;

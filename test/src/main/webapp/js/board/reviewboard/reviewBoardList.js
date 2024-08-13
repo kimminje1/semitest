@@ -7,3 +7,6 @@
         function goToFreeBoard() {
             window.location.href = '/test/board/freeboard/list'; // 자유 게시판으로 이동
         }
+        
+        
+     

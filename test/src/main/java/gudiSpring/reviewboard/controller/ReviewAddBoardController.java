@@ -76,7 +76,7 @@ public class ReviewAddBoardController extends HttpServlet {
             // ServletContext에서 Connection 가져오기
             ServletContext sc = this.getServletContext();
             conn = (Connection) sc.getAttribute("conn");
-
+            
             if (JakartaServletFileUpload.isMultipartContent(req)) {
                 // 요청에서 폼 아이템 파싱
                 List<FileItem> formItems = upload.parseRequest(req);
@@ -120,6 +120,9 @@ public class ReviewAddBoardController extends HttpServlet {
 
                                     // 본문에 이미지 태그 추가
                                  // 본문에 이미지 태그 추가
+                                    if (text == null) {
+                                        text = "";
+                                    }
                                     text += "<br/><img src='/images/" 
                                  + filePaths.get(filePaths.size() - 1) + "' alt='"
                                     		+ fileName + "' style='width:500px; height:300px; object-fit:cover;'/><br/>";
@@ -132,9 +135,9 @@ public class ReviewAddBoardController extends HttpServlet {
             }
          // 디버그 로그 추가
             System.out.println("Subject: " + subject);
-            System.out.println("Text: " + text);
+//            System.out.println("Text: " + text);
             System.out.println("File Path: " + filePaths);
-
+            
          // 선택된 파일 필터링
             List<String> selectedFiles = req.getParameterValues("selectedFiles") 
                 != null ? Arrays.asList(req.getParameterValues("selectedFiles")) : new ArrayList<>();
@@ -151,7 +154,7 @@ public class ReviewAddBoardController extends HttpServlet {
                 }
             }
             System.out.println("뜨나???"+finalFiles);
-
+            
             if (subject == null || subject.isEmpty()) {
                 throw new ServletException("Subject is missing or empty.");
             }
@@ -168,7 +171,7 @@ public class ReviewAddBoardController extends HttpServlet {
             ReviewBoardDao boardDao = new ReviewBoardDao();
             boardDao.setConnection(conn);
             boardDao.addBoard(boardDto);
-
+            
             // 게시글 목록 페이지로 리다이렉트
             res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");
         } catch (FileUploadException | SQLException e) {

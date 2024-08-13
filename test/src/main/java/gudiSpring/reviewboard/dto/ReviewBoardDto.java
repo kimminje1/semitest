@@ -13,9 +13,26 @@ public class ReviewBoardDto {
 	    private Date contentCreDate;         // 작성일
 	    private Date contentUpdateDate;      // 수정일
 	    private int userNo;                  // 사용자 번호
+	    private String nickname; 			 //닉네임
+	    private String boardInfoName;
 	    
-	    
-	    public ReviewBoardDto() {
+	    public String getBoardInfoName() {
+			return boardInfoName;
+		}
+
+		public void setBoardInfoName(String boardInfoName) {
+			this.boardInfoName = boardInfoName;
+		}
+
+		public String getNickname() {
+			return nickname;
+		}
+
+		public void setNickname(String nickname) {
+			this.nickname = nickname;
+		}
+
+		public ReviewBoardDto() {
 			// TODO Auto-generated constructor stub
 		}
 	    

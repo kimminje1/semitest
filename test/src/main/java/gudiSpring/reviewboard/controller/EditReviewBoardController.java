@@ -168,6 +168,8 @@ public class EditReviewBoardController extends HttpServlet {
 			ReviewBoardDao boardDao = new ReviewBoardDao();
 			boardDao.setConnection(conn);
 			boardDao.updateBoard(boardDto);
+			
+
 
 			// 게시글 목록 페이지로 리다이렉트
 			res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");

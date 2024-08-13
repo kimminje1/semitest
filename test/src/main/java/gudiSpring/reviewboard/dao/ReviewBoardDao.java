@@ -98,101 +98,149 @@ public class ReviewBoardDao {
 
    
 	//게시글 상세 조회 
-	  public ReviewBoardDto selectOne(int contentNo) 
-			  throws SQLException {
-			String sql = "SELECT CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO " +
-			             "FROM BOARD_CONTENT " +
-			              "WHERE CONTENT_BOARD_INFO_NO = 3 AND CONTENT_NO = ? " +
-			              "ORDER BY CONTENT_NO DESC";
-			 PreparedStatement pstmt = null; //자유게시판이니 2번,다른게시판으로수정시 수정할것
-			    ResultSet rs = null;
-		try {
-			pstmt = connection.prepareStatement(sql);
-			 pstmt.setInt(1, contentNo);
-			 rs = pstmt.executeQuery();
-			if (rs.next()) {
-                contentNo = rs.getInt("CONTENT_NO");
-                String contentSubject = rs.getString("CONTENT_SUBJECT");
-                String contentText = rs.getString("CONTENT_TEXT");
-                String contentFile = rs.getString("CONTENT_FILE");
-                int contentBoardInfoNo = rs.getInt("CONTENT_BOARD_INFO_NO");
-                Date contentCreDate = rs.getDate("CONTENT_CRE_DATE");
-                Date contentUpdateDate = rs.getDate("CONTENT_UPDATE_DATE");
-                int userNo = rs.getInt("USER_NO");
-                List<String> contentFiles
-                	= contentFile != null ? Arrays.asList(contentFile.split(",")) : new ArrayList<>();
-                return new ReviewBoardDto(contentNo, 
-                		contentSubject, contentText, 
-                		contentFiles, contentBoardInfoNo, 
-                		contentCreDate, contentUpdateDate, userNo);
-           
-			                
-			            }
-			        }catch (Exception e) {
-			            e.printStackTrace();
-			            throw e;
-			        } finally {
-			            try {
-			                if (rs != null) {
-			                    rs.close();
-			                }
-			            } catch (SQLException e) {
-			                e.printStackTrace();
-			            }
+    public ReviewBoardDto selectOne(int contentNo) throws SQLException {
+        String sql = "SELECT CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO "
+                   + "FROM BOARD_CONTENT WHERE CONTENT_NO = ?";
 
-			            try {
-			                if (pstmt != null) {
-			                    pstmt.close();
-			                }
-			            } catch (SQLException e) {
-			                e.printStackTrace();
-			            }
-			        }
-			   
-			    return null;
-	  }//selectone종료
+        String imgSql = "SELECT CONTENT_IMG_PATH FROM BOARD_CONTENT_IMG WHERE CONTENT_NO = ?";
+        
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, contentNo);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String contentSubject = rs.getString("CONTENT_SUBJECT");
+                    String contentText = rs.getString("CONTENT_TEXT");
+                    int contentBoardInfoNo = rs.getInt("CONTENT_BOARD_INFO_NO");
+                    Date contentCreDate = rs.getDate("CONTENT_CRE_DATE");
+                    Date contentUpdateDate = rs.getDate("CONTENT_UPDATE_DATE");
+                    int userNo = rs.getInt("USER_NO");
+
+                    List<String> contentFiles = new ArrayList<>();
+                    try (PreparedStatement imgPstmt = connection.prepareStatement(imgSql)) {
+                        imgPstmt.setInt(1, contentNo);
+                        try (ResultSet imgRs = imgPstmt.executeQuery()) {
+                            while (imgRs.next()) {
+                                contentFiles.add(imgRs.getString("CONTENT_IMG_PATH"));
+                            }
+                        }
+                    }
+
+                    return new ReviewBoardDto(contentNo, contentSubject, contentText, contentFiles, contentBoardInfoNo, contentCreDate, contentUpdateDate, userNo);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return null;
+    }
+//selectone종료
 	// 게시글 추가
-	  public void addBoard(ReviewBoardDto reviewboardDto) throws SQLException {
-	        String sql = "INSERT INTO BOARD_CONTENT (CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO) "
-	                   + "VALUES (CONTENT_NO_SEQ.NEXTVAL, ?, ?, ?, 3, SYSDATE, SYSDATE, ?)";
-//자유게시판이니 2번,다른게시판으로수정시 수정할것
-	        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-	            pstmt.setString(1, reviewboardDto.getContentSubject());
-	            pstmt.setString(2, reviewboardDto.getContentText());
-	            pstmt.setString(3, String.join(",", reviewboardDto.getContentFiles())); // 파일 경로를 콤마로 연결하여 저장/
-	            pstmt.setInt(4, reviewboardDto.getUserNo()); //추후설정필요
 
-	            pstmt.executeUpdate();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            throw e;
-	        }
-	    }
+		public void addBoard(ReviewBoardDto reviewboardDto) throws SQLException {
+			// 게시글을 DB에 삽입하는 SQL 문
+			String sql = "INSERT INTO BOARD_CONTENT (CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO) "
+					+ "VALUES (CONTENT_NO_SEQ.NEXTVAL, ?, ?, 3, SYSDATE, SYSDATE, ?)";
+ //리뷰게시판번호=3 다른게시판시반드시수정**
+
+		    
+			
+		    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+		        pstmt.setString(1, reviewboardDto.getContentSubject());
+		        pstmt.setString(2, reviewboardDto.getContentText());
+		        pstmt.setInt(3, reviewboardDto.getUserNo());
+
+		        int rowsAffected = pstmt.executeUpdate();
+		        System.out.println("Rows affected: " + rowsAffected);
+
+		        // CONTENT_NO 값 수동 조회
+		        String generatedKeyQuery = "SELECT CONTENT_NO_SEQ.CURRVAL FROM DUAL";
+		        try (PreparedStatement keyPstmt = connection.prepareStatement(generatedKeyQuery);
+		             ResultSet rs = keyPstmt.executeQuery()) {
+		            if (rs.next()) {
+		                int contentNo = rs.getInt(1);
+		                System.out.println("Generated CONTENT_NO: " + contentNo);
+
+		                // 이미지 파일 경로들을 DB에 삽입
+		                for (String filePath : reviewboardDto.getContentFiles()) {
+		                    String imgSql = "INSERT INTO BOARD_CONTENT_IMG (BOARD_IMG_NO, CONTENT_NO, CONTENT_IMG_PATH) "
+		                                  + "VALUES (BOARD_IMG_NO.NEXTVAL, ?, ?)";
+		                    try (PreparedStatement imgPstmt = connection.prepareStatement(imgSql)) {
+		                        imgPstmt.setInt(1, contentNo);
+		                        imgPstmt.setString(2, filePath);
+		                        imgPstmt.executeUpdate();
+		                    }
+		                    catch (SQLException e) {
+	                            e.printStackTrace();
+	                            throw new SQLException("이미지 경로 삽입 중 오류 발생: " + e.getMessage());
+	                        }
+		                }
+		            }
+		        }
+			} catch (SQLException e) {
+				e.printStackTrace();
+				throw e; // 예외 발생 시 다시 던짐
+			}
+		}
+
 	  
 	  //게시글삭제
 	  public void deletePost(int contentNo) throws SQLException {
-	        String sql = "DELETE FROM BOARD_CONTENT WHERE CONTENT_NO = ?";
-	        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-	            pstmt.setInt(1, contentNo);
-	            pstmt.executeUpdate();
-	        }
+		// 1. 먼저 BOARD_CONTENT_IMG 테이블에서 해당 게시글 번호에 연결된 이미지를 삭제
+		    String deleteImagesSql = "DELETE FROM BOARD_CONTENT_IMG WHERE CONTENT_NO = ?";
+		    
+		    // 2. 그 다음 BOARD_CONTENT 테이블에서 게시글을 삭제
+		    String deletePostSql = "DELETE FROM BOARD_CONTENT WHERE CONTENT_NO = ?";
+
+		    try (
+		        // BOARD_CONTENT_IMG에서 이미지 삭제
+		        PreparedStatement imgPstmt = connection.prepareStatement(deleteImagesSql);
+		        PreparedStatement postPstmt = connection.prepareStatement(deletePostSql)) {
+		        
+		        // 게시글 번호를 파라미터로 설정
+		        imgPstmt.setInt(1, contentNo);
+		        imgPstmt.executeUpdate(); // 이미지 경로 삭제
+
+		        // 게시글 삭제
+		        postPstmt.setInt(1, contentNo);
+		        postPstmt.executeUpdate();
+		    }
 	    }
-	// BoardDao.java
+
 
 	// 게시글 수정 메소드
 	public void updateBoard(ReviewBoardDto reviewboardDto) throws SQLException {
-	    String sql = "UPDATE BOARD_CONTENT SET CONTENT_SUBJECT = ?,"
-	    		+ " CONTENT_TEXT = ?, CONTENT_FILE = ?, "
-	    		+ "CONTENT_UPDATE_DATE = SYSDATE WHERE CONTENT_NO = ?";
-	    
-	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-	        pstmt.setString(1, reviewboardDto.getContentSubject());
-	        pstmt.setString(2, reviewboardDto.getContentText());
-	        pstmt.setString(3, String.join(",", reviewboardDto.getContentFiles())); 
-	        // 파일 경로를 콤마로 연결하여 저장
-	        pstmt.setInt(4, reviewboardDto.getContentNo());
+		 String sql = "UPDATE BOARD_CONTENT SET CONTENT_SUBJECT = ?,"
+	               + " CONTENT_TEXT = ?, CONTENT_UPDATE_DATE = SYSDATE "
+	               + "WHERE CONTENT_NO = ?";
+
+		 	
+		  try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+		        pstmt.setString(1, reviewboardDto.getContentSubject());
+		        pstmt.setString(2, reviewboardDto.getContentText());
+		        pstmt.setInt(3, reviewboardDto.getContentNo());
 	        
+	   
 	        pstmt.executeUpdate();
+	        
+
+	        // 기존 이미지 파일 경로 삭제 SQL 문
+	        String deleteImgSql = "DELETE FROM BOARD_CONTENT_IMG WHERE CONTENT_NO = ?";
+	        try (PreparedStatement deleteImgPstmt = connection.prepareStatement(deleteImgSql)) {
+	            deleteImgPstmt.setInt(1, reviewboardDto.getContentNo());
+	            deleteImgPstmt.executeUpdate();
+	        }
+
+	        // 새로운 이미지 파일 경로 삽입
+	        for (String filePath : reviewboardDto.getContentFiles()) {
+	            String imgSql = "INSERT INTO BOARD_CONTENT_IMG (BOARD_IMG_NO, CONTENT_NO, CONTENT_IMG_PATH) "
+	                          + "VALUES (BOARD_IMG_NO.NEXTVAL, ?, ?)";
+	            try (PreparedStatement imgPstmt = connection.prepareStatement(imgSql)) {
+	                imgPstmt.setInt(1, reviewboardDto.getContentNo());
+	                imgPstmt.setString(2, filePath);
+	                imgPstmt.executeUpdate();
+	            }
+	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        throw e;
@@ -214,11 +262,40 @@ public class ReviewBoardDao {
 	    }
 	    return new ArrayList<>();
 	}
-
-
-
-
-
-
+	//userno->닉네임
+	public String getNicknameByUserNo(int userNo) throws SQLException {
+	    String sql = "SELECT nickname FROM USER_INFO WHERE user_no = ?";
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setInt(1, userNo);
+	        try (ResultSet rs = pstmt.executeQuery()) {
+	            if (rs.next()) {
+	                return rs.getString("nickname");
+	            }
+	        }
+	    }
+	    return null; // 해당 user_no에 대한 nickname이 없을 경우
+	}
+	//게시판이름가져오는 메서드
+	public String getBoardInfoName(int boardInfoNo) throws SQLException {
+        String sql = "SELECT board_info_name FROM board_info WHERE board_info_no = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, boardInfoNo);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("board_info_name");
+                }
+            }
+        }
+        return null;
+    }
+	//게시판수정때쓰는 파일지우기
+	public void deleteImagePathFromDB(int contentNo, String fileName) throws SQLException {
+	    String sql = "DELETE FROM BOARD_CONTENT_IMG WHERE CONTENT_NO = ? AND CONTENT_IMG_PATH = ?";
+	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	        pstmt.setInt(1, contentNo);
+	        pstmt.setString(2, fileName);
+	        pstmt.executeUpdate();
+	    }
+	}
 
 }//전체dao
