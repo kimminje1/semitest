@@ -15,31 +15,56 @@ function validateFileInput() {
 }
 //지우기
 function deleteFile(fileName, contentNo) {
-    if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
-        fetch(`${window.location.origin}/board/reviewboard/deleteFile`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                contentNo: contentNo,
-                fileName: fileName
-            })
-        })
-        .then(response => response.text())
-        .then(data => {
-            if (data === "파일 삭제 성공") {
-                document.getElementById(`file-${fileName}`).remove(); // UI에서 파일 요소 제거
+
+
+
+	if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
+		const requestUrl = `${window.location.origin}/test/board/reviewboard/deleteFile`;
+
+
+
+
+
+		fetch(requestUrl, {
+
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: new URLSearchParams({
+				contentNo: contentNo,
+				fileName: fileName
+			})
+		})
+			.then(response => response.text())
+			.then(data => {
+				 if (data === "파일 삭제 성공") {
+                // UI에서 파일 요소 제거
+                document.getElementById(`file-${fileName}`).remove();
+
+                 // 본문에서 이미지 태그 제거
+                const contentDiv = document.getElementById('contentText');
+                const images = contentDiv.getElementsByTagName('img');
+                     for (let img of images) {
+                    // URL 객체를 사용하여 파일 이름만 추출
+                    const imgFileName = new URL(img.src).pathname.split('/').pop();
+                    console.log(`Comparing ${imgFileName} with ${fileName}`); // 디버그 로그
+                    if (imgFileName === fileName.split('/').pop()) { // 파일 이름만 비교
+                        img.remove(); // 본문에서 이미지 제거
+                        break;
+                    }
+                }
+
                 alert("파일이 성공적으로 삭제되었습니다.");
             } else {
-                alert("파일 삭제 실패: " + data);
-            }
-        })
-        .catch(error => {
-            console.error('파일 삭제 중 오류가 발생했습니다.', error);
-            alert('파일 삭제 중 오류가 발생했습니다.');
-        });
-    }
+					alert("파일 삭제 실패: " + data);
+				}
+			})
+			.catch(error => {
+				console.error('파일 삭제 중 오류가 발생했습니다.', error);
+				alert('파일 삭제 중 오류가 발생했습니다.');
+			});
+	}
 }
 
 ///미리보기용
@@ -49,37 +74,37 @@ let filesArray = [];
 
 // 파일 선택 시 호출되는 함수
 function handleFileSelect(event) {
-    const files = Array.from(event.target.files); // 선택된 파일을 배열로 변환
-    console.log('Selected files:', files); // 선택된 파일 출력
+	const files = Array.from(event.target.files); // 선택된 파일을 배열로 변환
+	console.log('Selected files:', files); // 선택된 파일 출력
 
-    files.forEach((file, index) => {
-        const currentIndex = filesArray.length; //현재 filesArray의 길이로 인덱스 설정
-        filesArray.push(file); // 새로운 파일을 filesArray에 추가
-        console.log('Stored file at index', currentIndex, ':', file); // 저장된 파일과 인덱스 출력
-        const fileItem = document.createElement('div');
-        fileItem.className = 'image-preview';
+	files.forEach((file, index) => {
+		const currentIndex = filesArray.length; //현재 filesArray의 길이로 인덱스 설정
+		filesArray.push(file); // 새로운 파일을 filesArray에 추가
+		console.log('Stored file at index', currentIndex, ':', file); // 저장된 파일과 인덱스 출력
+		const fileItem = document.createElement('div');
+		fileItem.className = 'image-preview';
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.alt = file.name;
-            img.style.width = '100px';  // 미리보기 이미지의 너비를 100px로 설정
-            img.style.height = '100px'; // 미리보기 이미지의 높이를 100px로 설정
-            img.style.objectFit = 'cover'; // 이미지가 부모 요소의 크기에 맞게 잘리도록 설정
+		const reader = new FileReader();
+		reader.onload = function(e) {
+			const img = document.createElement('img');
+			img.src = e.target.result;
+			img.alt = file.name;
+			img.style.width = '100px';  // 미리보기 이미지의 너비를 100px로 설정
+			img.style.height = '100px'; // 미리보기 이미지의 높이를 100px로 설정
+			img.style.objectFit = 'cover'; // 이미지가 부모 요소의 크기에 맞게 잘리도록 설정
 
-            const checkbox = document.createElement('input');
-            checkbox.type = "checkbox"; // 여러 개 선택 가능하게 checkbox로 설정
-            checkbox.name = "selectedFiles"; // checkbox의 이름 설정
-            checkbox.value = currentIndex;  // 파일 인덱스를 값으로 설정
+			const checkbox = document.createElement('input');
+			checkbox.type = "checkbox"; // 여러 개 선택 가능하게 checkbox로 설정
+			checkbox.name = "selectedFiles"; // checkbox의 이름 설정
+			checkbox.value = currentIndex;  // 파일 인덱스를 값으로 설정
 
-            fileItem.appendChild(checkbox);
-            fileItem.appendChild(img);
-            document.getElementById('file-list').appendChild(fileItem); // 기존 미리보기에 새 파일 추가
-        };
+			fileItem.appendChild(checkbox);
+			fileItem.appendChild(img);
+			document.getElementById('file-list').appendChild(fileItem); // 기존 미리보기에 새 파일 추가
+		};
 
-        reader.readAsDataURL(file);
-    });
+		reader.readAsDataURL(file);
+	});
 }
 document.querySelector('form').addEventListener('submit', function(event) {
 	const contentTextDiv = document.getElementById('contentText');
@@ -105,7 +130,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
 	}
 
 	// AJAX를 통해 파일 업로드 처리
-	fetch(contextPath + '/reviewboard/add', {
+	fetch(contextPath + '/reviewboard/edit', {
 		method: 'POST',
 		body: formData
 	}).then(response => {

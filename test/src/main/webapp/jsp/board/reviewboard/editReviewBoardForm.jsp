@@ -24,7 +24,7 @@
         <label for="subject">제목:</label>
         <input type="text" id="subject" name="contentSubject" value="${boardDto.contentSubject}" required>
 
-        <label for="text">내용:</label>
+        <label for="contenttext">내용:</label>
         <div id="contentText" contenteditable="true" class="textarea-field">${boardDto.contentText}</div>
 
         <label for="file">첨부 파일: .png, .jpeg, .jpg, .gif, .webp만 업로드 가능합니다</label>
@@ -50,6 +50,6 @@
     </form>
     <a href="<%= request.getContextPath() %>/board/reviewboard/list" class="back-link">목록으로 돌아가기</a>
 </div>
-<jsp:include page="/jsp/common/footer.jsp"/>
+<%-- <jsp:include page="/jsp/common/footer.jsp"/> --%>
 </body>
 </html>

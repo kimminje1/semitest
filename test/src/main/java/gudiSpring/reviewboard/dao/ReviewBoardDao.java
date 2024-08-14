@@ -25,18 +25,21 @@ public class ReviewBoardDao {
         ResultSet rs = null;
 
         try {
-            String sql = "";
-            sql += "SELECT * FROM ( ";
-            sql += "   SELECT ROWNUM AS rnum, a.* FROM ( ";
-            sql += "       SELECT CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, ";
-            sql += "       CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO ";
-            sql += "       FROM BOARD_CONTENT ";
-            sql += "       WHERE CONTENT_BOARD_INFO_NO = 3 "; // 게시판 번호에 따라 수정 필요
-            sql += "       ORDER BY CONTENT_NO DESC ";
-            sql += "   ) a ";
-            sql += "   WHERE ROWNUM <= ? ";  // endRow
-            sql += ") ";
-            sql += "WHERE rnum >= ?";  // startRow
+        	String sql = "";
+        	sql += "SELECT rnum, CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, ";
+        	sql += "CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO FROM ( ";
+        	sql += "   SELECT ROWNUM AS rnum, a.CONTENT_NO, a.CONTENT_SUBJECT, a.CONTENT_TEXT, a.CONTENT_FILE, ";
+        	sql += "   a.CONTENT_BOARD_INFO_NO, a.CONTENT_CRE_DATE, a.CONTENT_UPDATE_DATE, a.USER_NO FROM ( ";
+        	sql += "       SELECT CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_FILE, ";
+        	sql += "       CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO ";
+        	sql += "       FROM BOARD_CONTENT ";
+        	sql += "       WHERE CONTENT_BOARD_INFO_NO = 3 "; // 게시판 번호에 따라 수정 필요
+        	sql += "       ORDER BY CONTENT_NO DESC ";
+        	sql += "   ) a ";
+        	sql += "   WHERE ROWNUM <= ? ";  // endRow
+        	sql += ") ";
+        	sql += "WHERE rnum >= ?";  // startRow
+
 
             pstmt = connection.prepareStatement(sql);
             pstmt.setInt(1, startRow + pageSize - 1);  // endRow 계산
