@@ -9,8 +9,8 @@
    href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
    <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/common/common.css">
-<%--    href="${pageContext.request.contextPath}/css/board/reviewboard/newReviewBoard.css"> --%>
-<!-- 이유는모르지css링크가작동을안해서 style로넣음 -->
+
+
 <style>
   
   body {
@@ -61,11 +61,7 @@ input[type="submit"]:hover {
 }
   
 </style>
-    <!-- contextPath를 JavaScript 변수로 설정 -->
-<script type="text/javascript">
-        var contextPath = "<%= request.getContextPath() %>";
-</script>
-<%--  <script defer src="<%= request.getContextPath() %>/js/board/reviewboard/newReviewBorad.js"></script> --%>
+ 
     
 </head>
 
@@ -78,13 +74,13 @@ input[type="submit"]:hover {
     <div id="main-container">
         <h2>Add New Notice</h2>
         <form action="${pageContext.request.contextPath}/board/notice/add" method="post" enctype="multipart/form-data">
-            <label for="subject">Subject:</label>
-            <input type="text" id="subject" name="contentSubject" required>
+            <label for="subject">제목:</label>
+            <input type="text" id="subject" name="subject" required>
 
-            <label for="contentText">Content:</label>
-            <textarea id="contentText" name="contentText" rows="10"></textarea>
+            <label for="contentText">내용:</label>
+            <textarea id="contentText" name="contentText" rows="10" required></textarea>
 <!-- 	첨부파일기능구현할것 -->
-            <label for="file">Attachment: Only .png .jpeg .jpg .gif .webp files are allowed</label>
+            <label for="file">파일: Only .png .jpeg .jpg .gif .webp files are allowed</label>
             <input type="file" id="file" name="contentFile" accept="image/jpeg, image/jpg, image/png, image/gif, image/webp" multiple onchange="handleFileSelect(event);">
             <div id="file-list"></div>
 

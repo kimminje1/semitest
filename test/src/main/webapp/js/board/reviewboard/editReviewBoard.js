@@ -15,56 +15,11 @@ function validateFileInput() {
 }
 //지우기
 function deleteFile(fileName, contentNo) {
-
-
-
-	if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
-		const requestUrl = `${window.location.origin}/test/board/reviewboard/deleteFile`;
-
-
-
-
-
-		fetch(requestUrl, {
-
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			},
-			body: new URLSearchParams({
-				contentNo: contentNo,
-				fileName: fileName
-			})
-		})
-			.then(response => response.text())
-			.then(data => {
-				 if (data === "파일 삭제 성공") {
-                // UI에서 파일 요소 제거
-                document.getElementById(`file-${fileName}`).remove();
-
-                 // 본문에서 이미지 태그 제거
-                const contentDiv = document.getElementById('contentText');
-                const images = contentDiv.getElementsByTagName('img');
-                     for (let img of images) {
-                    // URL 객체를 사용하여 파일 이름만 추출
-                    const imgFileName = new URL(img.src).pathname.split('/').pop();
-                    console.log(`Comparing ${imgFileName} with ${fileName}`); // 디버그 로그
-                    if (imgFileName === fileName.split('/').pop()) { // 파일 이름만 비교
-                        img.remove(); // 본문에서 이미지 제거
-                        break;
-                    }
-                }
-
-                alert("파일이 성공적으로 삭제되었습니다.");
-            } else {
-					alert("파일 삭제 실패: " + data);
-				}
-			})
-			.catch(error => {
-				console.error('파일 삭제 중 오류가 발생했습니다.', error);
-				alert('파일 삭제 중 오류가 발생했습니다.');
-			});
-	}
+    if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
+        // AJAX를 사용하지 않고 페이지 리다이렉트로 처리
+        const requestUrl = `${window.location.origin}/test/board/reviewboard/deleteFile?contentNo=${contentNo}&fileName=${encodeURIComponent(fileName)}`;
+        window.location.href = requestUrl;
+    }
 }
 
 ///미리보기용
@@ -106,43 +61,6 @@ function handleFileSelect(event) {
 		reader.readAsDataURL(file);
 	});
 }
-document.querySelector('form').addEventListener('submit', function(event) {
-	const contentTextDiv = document.getElementById('contentText');
-	const hiddenInput = document.createElement('input');
-	hiddenInput.type = 'hidden';
-	hiddenInput.name = 'contentText';
-	hiddenInput.value = contentTextDiv.innerHTML; // HTML 내용을 숨겨진 필드로 복사
-
-	this.appendChild(hiddenInput);
-
-	// 기존 파일 업로드 로직
-	const checkboxes = document.querySelectorAll('input[name="selectedFiles"]:checked');
-	const formData = new FormData(this);
-
-	checkboxes.forEach(checkbox => {
-		const file = filesArray[checkbox.value];
-		formData.append('contentFile', file);
-	});
-
-	// formData 내용을 확인하기 위한 디버그 로그
-	for (let pair of formData.entries()) {
-		console.log(pair[0] + ', ' + pair[1]);
-	}
-
-	// AJAX를 통해 파일 업로드 처리
-	fetch(contextPath + '/reviewboard/edit', {
-		method: 'POST',
-		body: formData
-	}).then(response => {
-		if (response.ok) {
-			window.location.href = contextPath + '/board/reviewboard/list';
-		} else {
-			alert('파일 업로드 실패');
-		}
-	});
-
-	event.preventDefault(); //  폼의 기본 제출 동작을 방지
-});
 
 // 본문에 선택된 이미지를 삽입하는 함수
 function insertImageFromInput() {
@@ -170,7 +88,28 @@ function insertImageFromInput() {
 		alert('삽입할 이미지를 선택해주세요.');
 	}
 }
+// 본문 내용 업데이트
+document.getElementById('editForm').addEventListener('submit', function(event) {
+    // 본문 내용을 hidden input에 복사
+    const contentTextDiv = document.getElementById('contentText');
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'contentText';
+    hiddenInput.value = contentTextDiv ? contentTextDiv.innerHTML : ''; // contentTextDiv가 null이 아닐 경우에만 값을 설정
+    this.appendChild(hiddenInput);
 
+    // 선택된 파일들을 폼에 추가
+    const checkboxes = document.querySelectorAll('input[name="selectedFiles"]:checked');
+    checkboxes.forEach(checkbox => {
+        const file = filesArray[checkbox.value];
+        const fileInput = document.createElement('input');
+        fileInput.type = 'hidden';
+        fileInput.name = 'contentFile';
+        fileInput.files = [file];
+        this.appendChild(fileInput);
+    });
+
+});
 function insertImageToContent(imageSrc) {
 	const contentDiv = document.getElementById('contentText');
 

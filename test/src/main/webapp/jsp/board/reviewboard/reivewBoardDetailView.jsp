@@ -1,4 +1,4 @@
-<%@ page import="gudiSpring.reviewboard.dto.ReviewBoardDto"%>
+<%@ page import="gudiSpring.board.dto.reviewboard.ReviewBoardDto"%>
 <%@ page import="gudiSpring.comment.dto.CommentDto"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 

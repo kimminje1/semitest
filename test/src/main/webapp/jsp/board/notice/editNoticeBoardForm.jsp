@@ -1,4 +1,4 @@
-<%@ page import="gudiSpring.reviewboard.dto.ReviewBoardDto" %>
+<%@ page import="gudiSpring.board.dto.reviewboard.ReviewBoardDto" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -25,7 +25,7 @@
 <jsp:include page="/jsp/common/header.jsp"  />
 <div id="main-container">
     <h2>게시글 수정</h2>
-    <form action="<%= request.getContextPath() %>/reviewboard/edit" method="post" enctype="multipart/form-data">
+    <form action="<%= request.getContextPath() %>/board/reviewboard/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="contentNo" value="${boardDto.contentNo}">
         	
         <label for="subject">제목:</label>

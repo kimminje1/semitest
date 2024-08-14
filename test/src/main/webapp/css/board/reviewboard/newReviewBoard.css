@@ -1,14 +1,8 @@
 @charset "UTF-8";
 
-/* 전체 페이지 레이아웃을 위한 스타일 */
-html, body {
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-}
+
 /* body 스타일을 class로 변경 */
-.body-style {
+.bodystyle {
        font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -117,7 +111,7 @@ html, body {
     height: auto;            /* 콘텐츠에 따라 높이 자동 조절 */
     width: 100%;             /* 부모 요소의 너비를 100% 차지하도록 설정 */
 }
-body.body-style #main-container {
+body.bodystyle #main-container {
      flex: 1; /* 남은 공간을 차지하도록 설정 */
     padding: 20px; /* 페이지 양옆 여백 */
     box-sizing: border-box;
@@ -126,7 +120,7 @@ body.body-style #main-container {
     
 }
 
-body.body-style #footer {
+body.bodystyle #footer {
       background-color: #f8f8f8;
     padding: 20px;
     width: 100%;
@@ -134,3 +128,6 @@ body.body-style #footer {
     box-sizing: border-box;
     margin-top: 20px; /* footer와 상단 콘텐츠 간격 설정 */
 }
+
+
+

@@ -57,24 +57,26 @@ a:hover {
 
 /*        얘네가 페이징버튼 */
         .pagination {
-            display: flex;
-            justify-content: center;
-           
-             margin: 20px auto; /* 위아래 margin 추가, 왼쪽과 오른쪽 margin을 auto로 설정하여 가운데 정렬 */
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
 
-        }
-        .pagination a {
-            margin: 0 5px;
-            padding: 8px 16px;
-            text-decoration: none;
-            color: #333;
-            border: 1px solid #ddd;
-        }
-        .pagination a.active {
-            background-color: #4CAF50;
-            color: white;
-            border: 1px solid #4CAF50;
-        }
-        .pagination a:hover {
-            background-color: #ddd;
-        }
+.pagination-link {
+    margin: 0 5px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.pagination-link.active {
+    background-color: #81C784; /* 강조를 줄이기 위해 밝은 녹색으로 변경 */
+    color: white;
+    border: 1px solid #81C784;
+}
+
+.pagination-link:hover {
+    background-color: #f0f0f0; /* 강조를 줄이기 위해 hover 색상을 연한 회색으로 변경 */
+}

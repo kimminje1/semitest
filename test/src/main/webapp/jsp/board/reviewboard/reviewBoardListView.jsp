@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="gudiSpring.reviewboard.dto.ReviewBoardDto" %>
+<%@ page import="gudiSpring.board.dto.reviewboard.ReviewBoardDto" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,10 +62,10 @@
     <c:forEach var="i" begin="1" end="${totalPages}">
         <c:choose>
             <c:when test="${i == currentPage}">
-                <strong>${i}</strong>
+                <strong id="page-${i}" class="pagination-link active">${i}</strong>
             </c:when>
             <c:otherwise>
-                <a href="${pageContext.request.contextPath}/board/reviewboard/list?page=${i}">${i}</a>
+                <a href="${pageContext.request.contextPath}/board/reviewboard/list?page=${i}" id="page-${i}" class="pagination-link">${i}</a>
             </c:otherwise>
         </c:choose>
     </c:forEach>
