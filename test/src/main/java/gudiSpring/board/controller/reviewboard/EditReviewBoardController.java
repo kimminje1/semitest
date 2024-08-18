@@ -18,18 +18,20 @@ import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
 import gudiSpring.board.dao.reviewboard.ReviewBoardDao;
 import gudiSpring.board.dto.reviewboard.ReviewBoardDto;
+import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/reviewboard/edit")
 public class EditReviewBoardController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";
+	private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";
 	private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
 	private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -60,8 +62,8 @@ public class EditReviewBoardController extends HttpServlet {
 		req.setCharacterEncoding(CHARSET);
 		res.setContentType("text/html; charset=UTF-8");
 
-		DiskFileItemFactory factory = DiskFileItemFactory.builder().setPath(Paths.get(UPLOAD_DIRECTORY)) // 임시 저장소 디렉토리
-																											// 설정
+		DiskFileItemFactory factory = DiskFileItemFactory.builder()
+				.setPath(Paths.get(UPLOAD_DIRECTORY)) // 임시 저장소 디렉토리
 				.get();
 		// JakartaServletFileUpload 설정
 		JakartaServletFileUpload upload = new JakartaServletFileUpload(factory);
@@ -81,7 +83,10 @@ public class EditReviewBoardController extends HttpServlet {
 		boolean deleteFile = false;
 		Connection conn = null;
 
-		int userNo = 2; // 임시로 사용자 번호 설정
+		HttpSession session = req.getSession();
+		UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+		int userNo = userDto.getUserNo();
 		try {
 			ServletContext sc = this.getServletContext();
 			conn = (Connection) sc.getAttribute("conn");

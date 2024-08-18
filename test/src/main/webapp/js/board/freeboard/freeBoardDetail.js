@@ -4,7 +4,7 @@
 // 댓글 삭제 확인
 function confirmDelete(commentNo, contentNo, boardType) {
     if (confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
-        window.location.href = contextPath + '/deleteComment?commentNo=' + commentNo + '&contentNo=' + contentNo + '&boardType=' + boardType;
+        window.location.href = contextPath + '/comment/delete?commentNo=' + commentNo + '&contentNo=' + contentNo + '&boardType=' + boardType;
     }
 }
 

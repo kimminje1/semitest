@@ -19,17 +19,15 @@ public class CommentDao {
 
 	// 댓글 추가
 	public void addComment(CommentDto commentDto) throws SQLException {
-		 String sql = "INSERT INTO BOARD_CONTENT_COMMENT "
-		 		+ "(COMMENT_NO, CONTENT_NO, CONTENT_COMMENT, "
-		 		+ "COMMENT_CRE_DATE, "
-		 		+ "COMMENT_UPDATE_DATE) "
-	            + "VALUES (COMMENT_NO_SEQ.NEXTVAL, "
-	            + "?, ?, SYSDATE, SYSDATE)";
+		  String sql = "INSERT INTO BOARD_CONTENT_COMMENT "
+		            + "(COMMENT_NO, CONTENT_NO, CONTENT_COMMENT, USER_NO, "
+		            + "COMMENT_CRE_DATE, COMMENT_UPDATE_DATE) "
+		            + "VALUES (COMMENT_NO_SEQ.NEXTVAL, ?, ?, ?, SYSDATE, SYSDATE)";
 	    try (
 	    	PreparedStatement pstmt = connection.prepareStatement(sql)) {
 	        pstmt.setInt(1, commentDto.getContentNo());
 	        pstmt.setString(2, commentDto.getContentComment());
-	       
+	        pstmt.setInt(3, commentDto.getUserNo()); 
 	        pstmt.executeUpdate();
 	    }
 	}
@@ -58,40 +56,39 @@ public class CommentDao {
 	        pstmt.executeUpdate();
 	    }
 	}
-	// 댓글조회완료
+	// 댓글 조회 완료
 	public List<CommentDto> getCommentsByContentNo(int contentNo) 
-			throws SQLException {
-		String sql = "SELECT COMMENT_NO, CONTENT_NO, CONTENT_COMMENT, COMMENT_CRE_DATE, COMMENT_UPDATE_DATE " +
-                "FROM BOARD_CONTENT_COMMENT " +
-                "WHERE CONTENT_NO = ? " +
-                "ORDER BY COMMENT_CRE_DATE ASC";
-			List<CommentDto> comments = new ArrayList<>();
-			PreparedStatement pstmt = connection.prepareStatement(sql);
-			ResultSet rs = null;
-		try {
-			
-				
-			pstmt.setInt(1, contentNo);
-			
-			
-			rs = pstmt.executeQuery();
+	        throws SQLException {
+	    String sql = "SELECT c.COMMENT_NO, c.CONTENT_NO, c.CONTENT_COMMENT, "
+	    		+ "c.COMMENT_CRE_DATE, c.COMMENT_UPDATE_DATE, u.NICKNAME " +
+	                 "FROM BOARD_CONTENT_COMMENT c " +
+	                 "JOIN USER_INFO u ON c.USER_NO = u.USER_NO " +
+	                 "WHERE c.CONTENT_NO = ? " +
+	                 "ORDER BY c.COMMENT_CRE_DATE ASC";
+	    
+	    List<CommentDto> comments = new ArrayList<>();
+	    PreparedStatement pstmt = null;
+	    ResultSet rs = null;
+	    
+	    try {
+	        pstmt = connection.prepareStatement(sql);
+	        pstmt.setInt(1, contentNo);
+	        
+	        rs = pstmt.executeQuery();
 
-			
-			 while (rs.next()) {
-        CommentDto commentDto = new CommentDto();
-        commentDto.setCommentNo(rs.getInt("COMMENT_NO"));
-        commentDto.setContentNo(rs.getInt("CONTENT_NO"));
-        commentDto.setContentComment(rs.getString("CONTENT_COMMENT"));
-        commentDto.setCommentCreDate(rs.getDate("COMMENT_CRE_DATE"));
-        commentDto.setCommentUpdateDate(rs.getDate("COMMENT_UPDATE_DATE"));
-       
-                comments.add(commentDto);
-		 }//while  
-		
-			
-		
-
-			return comments;
+	        while (rs.next()) {
+	            CommentDto commentDto = new CommentDto();
+	            commentDto.setCommentNo(rs.getInt("COMMENT_NO"));
+	            commentDto.setContentNo(rs.getInt("CONTENT_NO"));
+	            commentDto.setContentComment(rs.getString("CONTENT_COMMENT"));
+	            commentDto.setCommentCreDate(rs.getDate("COMMENT_CRE_DATE"));
+	            commentDto.setCommentUpdateDate(rs.getDate("COMMENT_UPDATE_DATE"));
+	            commentDto.setNickname(rs.getString("NICKNAME")); // NICKNAME 설정
+	            
+	            comments.add(commentDto);
+	        }
+	        
+	        return comments;
 		}finally {
 			// 자원 해제
 			try {
@@ -112,49 +109,6 @@ public class CommentDao {
 		}//finally해제
 	}
 	  
-	public List<CommentDto> getCommentsByContentNo(int contentNo, int startRow, int pageSize) throws SQLException {
-	    String sql = "SELECT * FROM ( "
-	            + "   SELECT ROWNUM AS rnum, a.* FROM ( "
-	            + "       SELECT COMMENT_NO, CONTENT_NO, CONTENT_COMMENT, COMMENT_CRE_DATE, COMMENT_UPDATE_DATE "
-	            + "       FROM BOARD_CONTENT_COMMENT "
-	            + "       WHERE CONTENT_NO = ? "
-	            + "       ORDER BY COMMENT_CRE_DATE ASC "
-	            + "   ) a "
-	            + "   WHERE ROWNUM <= ? "  // endRow
-	            + ") "
-	            + "WHERE rnum >= ?";  // startRow
-
-	    List<CommentDto> comments = new ArrayList<>();
-	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-	        pstmt.setInt(1, contentNo);
-	        pstmt.setInt(2, startRow + pageSize - 1);  // endRow 계산
-	        pstmt.setInt(3, startRow);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            while (rs.next()) {
-	                CommentDto commentDto = new CommentDto();
-	                commentDto.setCommentNo(rs.getInt("COMMENT_NO"));
-	                commentDto.setContentNo(rs.getInt("CONTENT_NO"));
-	                commentDto.setContentComment(rs.getString("CONTENT_COMMENT"));
-	                commentDto.setCommentCreDate(rs.getDate("COMMENT_CRE_DATE"));
-	                commentDto.setCommentUpdateDate(rs.getDate("COMMENT_UPDATE_DATE"));
-	                comments.add(commentDto);
-	            }
-	        }
-	    }
-	    return comments;
-	}
-	public int getTotalComments(int contentNo) throws SQLException {
-	    String sql = "SELECT COUNT(*) FROM BOARD_CONTENT_COMMENT WHERE CONTENT_NO = ?";
-	    try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-	        pstmt.setInt(1, contentNo);
-	        try (ResultSet rs = pstmt.executeQuery()) {
-	            if (rs.next()) {
-	                return rs.getInt(1);  // 총 댓글 수 반환
-	            }
-	        }
-	    }
-	    return 0;  // 댓글이 없는 경우 0을 반환
-	}
 	
 	// 게시글에 연관된 모든 댓글 삭제
 		public void deleteCommentsByContentNo(int contentNo) throws SQLException {

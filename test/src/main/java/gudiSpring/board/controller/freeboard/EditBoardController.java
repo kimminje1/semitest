@@ -17,12 +17,14 @@ import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
 import gudiSpring.board.dao.freeboard.BoardDao;
 import gudiSpring.board.dto.freeboard.BoardDto;
+import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/freeboard/edit")
 public class EditBoardController extends HttpServlet {
@@ -83,7 +85,10 @@ public class EditBoardController extends HttpServlet {
            boolean deleteFile = false;
            Connection conn = null;
            
-           	int userNo = 2; // 임시로 사용자 번호 설정
+           HttpSession session = req.getSession();
+           UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+           int userNo = userDto.getUserNo();  
         try {
             ServletContext sc = this.getServletContext();
             conn = (Connection) sc.getAttribute("conn");

@@ -16,6 +16,7 @@ import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
 import gudiSpring.board.dao.freeboard.BoardDao;
 import gudiSpring.board.dto.freeboard.BoardDto;
+import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -23,12 +24,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/freeboard/add")
 public class AddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/freeboard";
+    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/freeboard";
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -67,7 +69,10 @@ public class AddBoardController extends HttpServlet {
         String subject = null;
         String text = null;
         String filePath = DEFAULT_FILE; // 기본 파일 경로 설정
-        int userNo = 2; // 임시로 사용자 번호 설정
+        HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+        int userNo = userDto.getUserNo();  
 
         Connection conn = null;
         try {

@@ -60,9 +60,7 @@
 
         <!-- 게시글 내용 -->
         <div class="board-content">
-<%--             <c:forEach var="file" items="${boardDto.contentFiles}"> --%>
-<%--                 <img src="${fn:replace(file, '/test', '')}" alt="Attached Image" /> --%>
-<%--             </c:forEach> --%>
+
             <p class="content-text"><%=boardDto.getContentText()%></p>
         </div>
 		
@@ -83,7 +81,8 @@
 	<form action="<%=request.getContextPath()%>/addComment" method="post"
 		onsubmit="return validateForm(this);">
 		<input type="hidden" name="contentNo"
-			value="<%=boardDto.getContentNo()%>"> <input type="hidden"
+			value="<%=boardDto.getContentNo()%>"> 
+			<input type="hidden"
 			name="boardType" value="reviewboard">
 		<!-- 게시판 유형 value필수설정-->
 		<textarea name="commentContent" rows="4" cols="50"

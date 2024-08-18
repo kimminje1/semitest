@@ -5,6 +5,7 @@ import java.sql.Connection;
 
 import gudiSpring.board.dao.notice.NoticeDao;
 import gudiSpring.board.dto.notice.NoticeDto;
+import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/notice/add")
 public class AddNoticeController extends HttpServlet {
@@ -40,7 +42,10 @@ public class AddNoticeController extends HttpServlet {
 //       int userNo = Integer.parseInt(req.getParameter("userNo"));
        
         //로그인/로그아웃전임시용
-      int userNo = 2;
+        HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+        int userNo = userDto.getUserNo();  
    
       if (subject == null || subject.trim().isEmpty()) {
           subject = "Untitled";  // 기본값 설정

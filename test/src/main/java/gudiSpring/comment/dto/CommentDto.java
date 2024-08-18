@@ -14,6 +14,16 @@ public class CommentDto {
     private Date commentCreDate;    // 댓글 생성일
     private Date commentUpdateDate; // 댓글 수정일
     private int parentCommentNo; // 대댓글의 부모 댓글 번호
+    private int userNo;
+    private String nickname;
+    
+    
+	public int getUserNo() {
+		return userNo;
+	}
+	public void setUserNo(int userNo) {
+		this.userNo = userNo;
+	}
 	public int getCommentNo() {
 		return commentNo;
 	}
@@ -50,11 +60,24 @@ public class CommentDto {
 	public void setParentCommentNo(int parentCommentNo) {
 		this.parentCommentNo = parentCommentNo;
 	}
+	
+	
+	public CommentDto(int commentNo, int contentNo, String contentComment, Date commentCreDate, Date commentUpdateDate,
+			int parentCommentNo, int userNo) {
+		super();
+		this.commentNo = commentNo;
+		this.contentNo = contentNo;
+		this.contentComment = contentComment;
+		this.commentCreDate = commentCreDate;
+		this.commentUpdateDate = commentUpdateDate;
+		this.parentCommentNo = parentCommentNo;
+		this.userNo = userNo;
+	}
 	@Override
 	public String toString() {
 		return "CommentDto [commentNo=" + commentNo + ", contentNo=" + contentNo + ", contentComment=" + contentComment
 				+ ", commentCreDate=" + commentCreDate + ", commentUpdateDate=" + commentUpdateDate
-				+ ", parentCommentNo=" + parentCommentNo + "]";
+				+ ", parentCommentNo=" + parentCommentNo + ", userNo=" + userNo + ", nickname=" + nickname + "]";
 	}
 	public CommentDto(int commentNo, int contentNo, String contentComment, Date commentCreDate, Date commentUpdateDate,
 			int parentCommentNo) {
@@ -65,6 +88,24 @@ public class CommentDto {
 		this.commentCreDate = commentCreDate;
 		this.commentUpdateDate = commentUpdateDate;
 		this.parentCommentNo = parentCommentNo;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public CommentDto(int commentNo, int contentNo, String contentComment, Date commentCreDate, Date commentUpdateDate,
+			int parentCommentNo, int userNo, String nickname) {
+		super();
+		this.commentNo = commentNo;
+		this.contentNo = contentNo;
+		this.contentComment = contentComment;
+		this.commentCreDate = commentCreDate;
+		this.commentUpdateDate = commentUpdateDate;
+		this.parentCommentNo = parentCommentNo;
+		this.userNo = userNo;
+		this.nickname = nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
     
 

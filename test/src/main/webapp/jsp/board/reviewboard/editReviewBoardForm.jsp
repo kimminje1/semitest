@@ -18,7 +18,7 @@
 <jsp:include page="/jsp/common/header.jsp" />
 <div id="main-container">
     <h2>게시글 수정</h2>
-    <form id="editForm" action="<%= request.getContextPath() %>/reviewboard/edit" method="post" enctype="multipart/form-data">
+    <form id="editForm" action="<%= request.getContextPath() %>/board/reviewboard/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="contentNo" value="${boardDto.contentNo}">
         
         <label for="subject">제목:</label>
@@ -50,6 +50,6 @@
     </form>
     <a href="<%= request.getContextPath() %>/board/reviewboard/list" class="back-link">목록으로 돌아가기</a>
 </div>
-<%-- <jsp:include page="/jsp/common/footer.jsp"/>  --%>
+ <jsp:include page="/jsp/common/footer.jsp"/> 
 </body>
 </html>

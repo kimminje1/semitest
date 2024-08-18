@@ -1,6 +1,6 @@
 package gudiSpring.board.dto.reviewboard;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 public class ReviewBoardDto {
@@ -88,12 +88,14 @@ public class ReviewBoardDto {
 			this.contentFiles = contentFiles;
 		}
 
+		
+
 		@Override
 		public String toString() {
 			return "ReviewBoardDto [contentNo=" + contentNo + ", contentSubject=" + contentSubject + ", contentText="
 					+ contentText + ", contentFiles=" + contentFiles + ", contentBoardInfoNo=" + contentBoardInfoNo
 					+ ", contentCreDate=" + contentCreDate + ", contentUpdateDate=" + contentUpdateDate + ", userNo="
-					+ userNo + "]";
+					+ userNo + ", nickname=" + nickname + ", boardInfoName=" + boardInfoName + "]";
 		}
 
 		public ReviewBoardDto(int contentNo, String contentSubject, String contentText, List<String> contentFiles,
@@ -108,7 +110,38 @@ public class ReviewBoardDto {
 			this.contentUpdateDate = contentUpdateDate;
 			this.userNo = userNo;
 		}
+
+		public ReviewBoardDto(int contentNo, String contentSubject, String contentText, List<String> contentFiles,
+				int contentBoardInfoNo, Date contentCreDate, Date contentUpdateDate, int userNo, String nickname,
+				String boardInfoName) {
+			super();
+			this.contentNo = contentNo;
+			this.contentSubject = contentSubject;
+			this.contentText = contentText;
+			this.contentFiles = contentFiles;
+			this.contentBoardInfoNo = contentBoardInfoNo;
+			this.contentCreDate = contentCreDate;
+			this.contentUpdateDate = contentUpdateDate;
+			this.userNo = userNo;
+			this.nickname = nickname;
+			this.boardInfoName = boardInfoName;
+		}
+
+		public ReviewBoardDto(int contentNo, String contentSubject, String contentText, int contentBoardInfoNo,
+				Date contentCreDate, Date contentUpdateDate, int userNo, String nickname, String boardInfoName) {
+			super();
+			this.contentNo = contentNo;
+			this.contentSubject = contentSubject;
+			this.contentText = contentText;
+			this.contentBoardInfoNo = contentBoardInfoNo;
+			this.contentCreDate = contentCreDate;
+			this.contentUpdateDate = contentUpdateDate;
+			this.userNo = userNo;
+			this.nickname = nickname;
+			this.boardInfoName = boardInfoName;
+		}
+
 		
-		
+	
 
 }

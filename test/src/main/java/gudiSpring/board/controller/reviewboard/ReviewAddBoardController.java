@@ -18,6 +18,7 @@ import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
 import gudiSpring.board.dao.reviewboard.ReviewBoardDao;
 import gudiSpring.board.dto.reviewboard.ReviewBoardDto;
+import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -25,12 +26,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/board/reviewboard/add")
 public class ReviewAddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";//파일저장위치
+    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";//파일저장위치
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -69,7 +71,10 @@ public class ReviewAddBoardController extends HttpServlet {
         String subject = null;
         String text = null;
         List<String> filePaths = new ArrayList<>(); // 여러 파일 경로를 저장할 리스트
-        int userNo = 2; // 임시로 사용자 번호 설정
+        HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+        int userNo = userDto.getUserNo();  
 
         Connection conn = null;
         try {

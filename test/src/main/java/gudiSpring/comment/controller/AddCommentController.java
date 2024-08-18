@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/addComment")
 public class AddCommentController extends HttpServlet {
@@ -27,7 +28,10 @@ public class AddCommentController extends HttpServlet {
 		int contentNo = Integer.parseInt(req.getParameter("contentNo"));
 		 String boardType = req.getParameter("boardType"); // 게시판 유형 파라미터 추가
         String commentContent = req.getParameter("commentContent");
-
+        
+        HttpSession session = req.getSession();
+        Integer userNo = (Integer) session.getAttribute("USER_NO");
+        
         CommentDto commentDto = new CommentDto();
         commentDto.setContentNo(contentNo);
      
@@ -38,10 +42,11 @@ public class AddCommentController extends HttpServlet {
         	 // ServletContext에서 Connection 가져오기
             ServletContext sc = this.getServletContext();
             conn = (Connection) sc.getAttribute("conn");
-
+           
             CommentDao commentDao = new CommentDao();
             commentDao.setConnection(conn);
             commentDao.addComment(commentDto);
+            commentDto.setUserNo(userNo); // USER_NO 설정
             
             //반드시!!!댓글에 boardType설정해야함!!!
             String redirectUrl = req.getContextPath() + "/board/" + boardType + "/detail?contentNo=" + contentNo;
