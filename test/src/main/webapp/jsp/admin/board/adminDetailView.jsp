@@ -54,7 +54,7 @@
 
     
      <!-- ´ñ±Û ¸®½ºÆ® Ãß°¡ -->
-    <h3>´ñ±Û</h3>
+
     <ul id="comment-list" class="comments">
         <c:forEach var="comment" items="${commentList}">
             <li class="comment-item">

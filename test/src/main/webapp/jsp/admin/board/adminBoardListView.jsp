@@ -30,6 +30,7 @@
         <tr>
             <th class="boardHeader">게시판</th>
             <th class="boardHeader">제목</th>
+            <th class="boardHeader">작성자</th>
             <th class="boardHeader">작성일</th>
             <th class="boardHeader">수정일</th>
              <th class="boardHeader">삭제</th>
@@ -44,6 +45,7 @@
                         ${board.contentSubject}
                     </a>
                 </td>
+                <td class="boardCell">${board.nickname}</td>
                 <td class="boardCell">${board.contentCreDate}</td>
                 <td class="boardCell">${board.contentUpdateDate}</td>
                   <td class="boardCell">
