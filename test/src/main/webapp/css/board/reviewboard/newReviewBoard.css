@@ -125,3 +125,9 @@ body.bodystyle #main-container {
     width: 100%;
 }
 
+#contentText img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px; /* 이미지 아래에 여백 추가 */
+}

@@ -1,4 +1,5 @@
 <%@ page import="gudiSpring.board.dto.reviewboard.ReviewBoardDto" %>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -9,9 +10,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/common/common.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/board/reviewboard/editReviewBoard.css">
-    <script>
-        var contextPath = "<%= request.getContextPath() %>";
-    </script>
+   
+    <!-- jQuery 라이브러리 포함 -->
+   	  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+    <script> var contextPath = "<%= request.getContextPath() %>"; </script>
     <script defer src="${pageContext.request.contextPath}/js/board/reviewboard/editReviewBoard.js"></script>
 </head>
 <body id="body-style">

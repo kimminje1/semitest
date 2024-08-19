@@ -7,38 +7,63 @@
 //지우기
 function deleteFile(fileName, contentNo) {
 	 console.log('File name:', fileName);
+   
     if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
        
-    	//본문이미지삭제
-       // 파일 경로를 상대 경로로 설정
-        const filePath = `/img/${fileName}`;
-        console.log('File Path11:', filePath);
+       const contentDiv = document.getElementById('contentText');
+		const images = contentDiv.querySelectorAll('img');
+		const cleanedFilePath = `/img/${fileName}`.trim(); // 정리된 파일 경로 
         
-            // 현재 페이지의 기본 URL
-        const baseUrl = window.location.origin;
-        
-        // 본문 내용에서 이미지 검색 및 삭제
-        const contentDiv = document.getElementById('contentText');
-        const images = contentDiv.querySelectorAll('img');
-		
-        images.forEach(img => {	// 각 이미지의 src 속성 출력
-			  const imgSrc = img.src;
-            console.log('Image src11:', imgSrc);
-			//img.src의 경로에서 기본 URL을 제거하여 상대 경로로 변환
-            const relativeImgSrc = imgSrc.replace(baseUrl, '');
-			console.log('Image src22:', relativeImgSrc);
-			 
-            if (relativeImgSrc  === filePath) { // 파일 경로와 일치하는 이미지 찾기	
-            console.log('Removing image1:', imgSrc);
-                img.remove(); // DOM에서 이미지 요소 제거
+        // 이미지 찾기 및 제거
+     		 images.forEach(function(img) {
+    		const imgSrc = new URL(img.src).pathname; 
+    		console.log('Image src:', imgSrc);
+
+             if (imgSrc == cleanedFilePath) {
+                console.log('Removing image:', imgSrc);
+                try {
+                    const brBefore = img.previousSibling;
+                    const brAfter = img.nextSibling;
+                    if (brBefore && brBefore.nodeName === 'BR') {
+                        contentDiv.removeChild(brBefore);
+                    }
+                    if (brAfter && brAfter.nodeName === 'BR') {
+                        contentDiv.removeChild(brAfter);
+                    }
+                    const parentDiv = img.parentNode;
+                    parentDiv.removeChild(img); // img 태그 제거
+                    console.log('Image and surrounding <br/> tags removed successfully.');
+                } catch (error) {
+                    console.error('Error removing image:', error);
+                }
+            } else {
+                console.log('Image paths do not match.');
             }
         });
-        
-        //encodeURIComponent특문인코딩함수
-             const requestUrl = `${window.location.origin}/test/board/reviewboard/deleteFile?contentNo=${contentNo}&fileName=${encodeURIComponent(fileName)}`;
-          // 서버에 파일 삭제 요청을 보냄->새로고침
-        window.location.href = requestUrl;
-}
+       
+        // 서버에 파일 삭제 요청을 보냄
+        const requestUrl = `${window.location.origin}/test/board/reviewboard/deleteFile?contentNo=${contentNo}&fileName=${encodeURIComponent(fileName)}`;
+//        window.location.href = requestUrl;
+ // 서버로 업데이트된 contentText를 전송하는 코드 추가
+                    const updatedContentText = contentDiv.innerHTML;
+                    fetch(requestUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contentNo: contentNo,
+                            contentText: updatedContentText,
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Server response:', data);
+                        // 성공 시 페이지를 새로고침 또는 다른 로직 수행
+                        window.location.reload(); // 새로고침
+                    })
+                    .catch(error => console.error('Error:', error));
+    }
 	}
 
 // 첨부파일을 저장할 배열
@@ -201,13 +226,10 @@ function insertImageToContent(previewSrc, filePath) {
     img.style.height = 'auto';
     img.style.marginBottom = '10px';
 
-    // 새로운 단락 생성
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
-
+  
     // 이미지와 단락을 contentDiv에 추가
     contentDiv.appendChild(img);
-    contentDiv.appendChild(p);
+    
     
     
 }

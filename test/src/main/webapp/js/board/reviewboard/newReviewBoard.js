@@ -153,13 +153,11 @@ function insertImageToContent(previewSrc, filePath) {
     img.style.height = 'auto';
     img.style.marginBottom = '10px';
 
-    // 새로운 단락 생성
-    const p = document.createElement('p');
-    p.innerHTML = '<br>';
+    
 
     // 이미지와 단락을 contentDiv에 추가
     contentDiv.appendChild(img);
-    contentDiv.appendChild(p);
+
     
     
 }
