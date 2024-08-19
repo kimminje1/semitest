@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpSession;
 public class ReviewAddBoardController extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";//파일저장위치
+    private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";//파일저장위치
     private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
     private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -40,6 +40,16 @@ public class ReviewAddBoardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) 
             throws ServletException, IOException {
+    	
+    	HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+       
+        // 권한 확인
+        if (userDto == null) {
+            res.sendRedirect(req.getContextPath() + "/auth/signin");
+            return;
+        }
+       
         // 작성 폼으로 이동
         RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/reviewboard/newReviewBoardForm.jsp");
         dispatcher.forward(req, res);
@@ -73,12 +83,12 @@ public class ReviewAddBoardController extends HttpServlet {
         List<String> filePaths = new ArrayList<>(); // 여러 파일 경로를 저장할 리스트
         HttpSession session = req.getSession();
         UserDto userDto = (UserDto) session.getAttribute("userDto");
-        if (userDto == null) {
-            // 로그인이 안된 상태이므로 로그인 페이지로 리다이렉트
+     
+        if (userDto == null ) {
             res.sendRedirect(req.getContextPath() + "/auth/signin");
-            return; // 이후 코드를 실행하지 않도록 return
+            return;
         }
-
+      
         int userNo = userDto.getUserNo();  
 
         Connection conn = null;
@@ -133,7 +143,7 @@ public class ReviewAddBoardController extends HttpServlet {
                                     if (text == null) {
                                         text = "";
                                     }
-                                    text += "<br/><img src='/images/" 
+                                    text += "<br/><img src='/img/" 
                                  + filePaths.get(filePaths.size() - 1) + "' alt='"
                                     		+ fileName + "' style='width:500px; height:300px; object-fit:cover;'/><br/>";
 

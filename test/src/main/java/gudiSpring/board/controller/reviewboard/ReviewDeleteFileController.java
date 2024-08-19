@@ -23,7 +23,11 @@ public class ReviewDeleteFileController extends HttpServlet {
 	 * 
 	 */
 	private static final long serialVersionUID = 1868710412261301732L;
-
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(req, resp);
+	}
 	@Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
@@ -54,7 +58,8 @@ public class ReviewDeleteFileController extends HttpServlet {
             if (file.exists() && file.isFile()) {
                 if (file.delete()) {
                     boardDao.deleteImagePathFromDB(contentNo, fileName);  // 파일 경로 DB에서도 삭제
-                    res.getWriter().write("파일 삭제 성공");
+                 // 성공적으로 삭제된 경우, 수정 페이지로 리다이렉션
+                    res.sendRedirect(req.getContextPath() + "/board/reviewboard/edit?contentNo=" + contentNo);
                 } else {
                     res.getWriter().write("파일 삭제 실패");
                 }

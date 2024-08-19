@@ -177,5 +177,10 @@ public class UserDto {
 		    + ", phone=" + phone + ", creDate=" + creDate + ", upDate=" + upDate + ", authority=" + authority
 		    + ", userLeave=" + userLeave + ", postCount=" + postCount + ", commentCount=" + commentCount + "]";
 	}
-
+	
+	
+	   // 글 작성 권한이 있는지 확인하는 메서드
+    public boolean hasAdminPermission() {
+        return "ADMIN".equals(this.authority);
+    }
 }

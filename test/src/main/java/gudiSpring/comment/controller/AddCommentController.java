@@ -5,6 +5,7 @@ import java.sql.Connection;
 
 import gudiSpring.comment.dao.CommentDao;
 import gudiSpring.comment.dto.CommentDto;
+import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -30,7 +31,15 @@ public class AddCommentController extends HttpServlet {
         String commentContent = req.getParameter("commentContent");
         
         HttpSession session = req.getSession();
-        Integer userNo = (Integer) session.getAttribute("USER_NO");
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+        // 사용자가 로그인되어 있고 권한이 있는지 확인
+        if (userDto == null) {
+            res.sendRedirect(req.getContextPath() + "/auth/signin");
+            return;
+        }
+        // userNo 가져오기
+        int userNo = userDto.getUserNo();
         
         CommentDto commentDto = new CommentDto();
         commentDto.setContentNo(contentNo);

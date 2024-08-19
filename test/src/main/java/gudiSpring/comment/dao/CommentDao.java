@@ -118,6 +118,32 @@ public class CommentDao {
 				pstmt.executeUpdate();
 			}
 		}
+		
+		
+		 // commentNo를 기반으로 댓글을 조회하는 메서드
+	    public CommentDto getCommentById(int commentNo) throws SQLException {
+	        String sql = "SELECT COMMENT_NO, CONTENT_NO, CONTENT_COMMENT, USER_NO, COMMENT_CRE_DATE, COMMENT_UPDATE_DATE " +
+	                     "FROM BOARD_CONTENT_COMMENT WHERE COMMENT_NO = ?";
+	        
+	        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+	            pstmt.setInt(1, commentNo);
 
+	            try (ResultSet rs = pstmt.executeQuery()) {
+	                if (rs.next()) {
+	                    CommentDto commentDto = new CommentDto();
+	                    commentDto.setCommentNo(rs.getInt("COMMENT_NO"));
+	                    commentDto.setContentNo(rs.getInt("CONTENT_NO"));
+	                    commentDto.setContentComment(rs.getString("CONTENT_COMMENT"));
+	                    commentDto.setUserNo(rs.getInt("USER_NO"));
+	                    commentDto.setCommentCreDate(rs.getDate("COMMENT_CRE_DATE"));
+	                    commentDto.setCommentUpdateDate(rs.getDate("COMMENT_UPDATE_DATE"));
+	                    return commentDto;
+	                }
+	            }
+	        }
+
+	        return null; // 댓글이 없는 경우
+	    }
+	
    
 }//dao

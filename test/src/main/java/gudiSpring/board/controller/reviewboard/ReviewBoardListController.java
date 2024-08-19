@@ -59,8 +59,13 @@ public class ReviewBoardListController extends HttpServlet {
 			        // <img> 태그를 <사진>으로 대체
 			        contentText = contentText.replaceAll("<img[^>]*>", "<사진>");
 			        
-			        // <p><br></p> 태그를 공백으로 대체
-			        contentText = contentText.replaceAll("<p><br></p>", "");
+			     // 여러 태그를 한 번에 대체하기 위한 정규표현식
+			        contentText = contentText.replaceAll("<p>|</p>|<br\\s*/?>", " ");
+//			     // <p><br></p>와 <br/><br/> 태그를 공백으로 대체 위에꺼gpt한테물어봄...ㅠ
+//			        contentText = contentText.replaceAll("<p>", " ");
+//			        contentText = contentText.replaceAll("<br>", " ");
+//			        contentText = contentText.replaceAll("</p>", " ");
+//			        contentText = contentText.replaceAll("<br/>", " ");
 
 			        // 변환된 텍스트를 다시 설정
 			        board.setContentText(contentText);

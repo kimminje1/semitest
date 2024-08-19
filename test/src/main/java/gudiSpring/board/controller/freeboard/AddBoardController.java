@@ -38,6 +38,15 @@ public class AddBoardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) 
             throws ServletException, IOException {
+    	
+    	HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+       
+        // 권한 확인
+        if (userDto == null) {
+            res.sendRedirect(req.getContextPath() + "/auth/signin");
+            return;
+        }
         // 작성 폼으로 이동
         RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/freeboard/newFreeBoardForm.jsp");
         dispatcher.forward(req, res);

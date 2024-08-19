@@ -48,12 +48,19 @@ public class UserSigninController extends HttpServlet {
 			userDto = userDao.userLogin(id, password);
 
 			if (userDto == null) {
-
+				  // 로그인 실패 시 처리 임시코드
+                req.setAttribute("errorMessage", "Invalid username or password.");
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/auth/signinView.jsp");
+                dispatcher.forward(req, res);
+                return; // 더 이상 실행하지 않음
 			} else {
 				System.out.println("성공");
 			}
 
 			HttpSession session = req.getSession();
+			if (session == null) {
+                throw new ServletException("세션을 생성할 수 없습니다.");
+            } //임시코드
 			session.setAttribute("userDto", userDto);
 
 //			RequestDispatcher dispatcher = req.getRequestDispatcher("./index.jsp");

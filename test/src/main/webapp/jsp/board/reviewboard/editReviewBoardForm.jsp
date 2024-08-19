@@ -14,12 +14,13 @@
     </script>
     <script defer src="${pageContext.request.contextPath}/js/board/reviewboard/editReviewBoard.js"></script>
 </head>
-<body>
+<body id="body-style">
 <jsp:include page="/jsp/common/header.jsp" />
 <div id="main-container">
     <h2>게시글 수정</h2>
     <form id="editForm" action="<%= request.getContextPath() %>/board/reviewboard/edit" method="post" enctype="multipart/form-data">
         <input type="hidden" name="contentNo" value="${boardDto.contentNo}">
+          <input type="hidden" id="hiddenContentText" name="contentText" value="">
         
         <label for="subject">제목:</label>
         <input type="text" id="subject" name="contentSubject" value="${boardDto.contentSubject}" required>
@@ -29,24 +30,24 @@
 
         <label for="file">첨부 파일: .png, .jpeg, .jpg, .gif, .webp만 업로드 가능합니다</label>
         <input type="file" id="file" 
-        name="contentFile" accept="image/jpeg, image/jpg, image/png, image/gif, image/webp"  multiple onchange="handleFileSelect(event)"><br>
+        name="contentFile" accept="image/jpeg, image/jpg, image/png, image/gif, image/webp"  multiple ><br>
 
         <!-- 기존 파일 리스트 -->
         <c:if test="${not empty boardDto.contentFiles}">
-            <div class="file-list">
+            <div id="existing-file-list" >
                 <p>기존 파일:</p>
                 <c:forEach var="file" items="${boardDto.contentFiles}">
                     <div id="file-${file}" class="file-item">
                         <span>${file}</span>
-                         <button type="button" onclick="deleteFile('${file}', ${boardDto.contentNo})">삭제</button>
+                         <button type="button" id="deleteFileButton"onclick="deleteFile('${file}', ${boardDto.contentNo})">삭제</button>
                     </div>
                 </c:forEach>
             </div>
         </c:if>
           <!-- 새로운 파일 미리보기 리스트 -->
-        <div id="file-list"></div>
+        <div id="new-file-list"></div>
 		   <button type="button" onclick="insertImageFromInput()" class="submit-button">이미지 본문삽입</button>
-        <input type="submit" value="수정 완료">
+        <input type="submit" id="completeButton" value="수정 완료">
     </form>
     <a href="<%= request.getContextPath() %>/board/reviewboard/list" class="back-link">목록으로 돌아가기</a>
 </div>

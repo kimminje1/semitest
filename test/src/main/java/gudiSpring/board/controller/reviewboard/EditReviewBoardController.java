@@ -31,12 +31,18 @@ import jakarta.servlet.http.HttpSession;
 public class EditReviewBoardController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final String UPLOAD_DIRECTORY = "C:/GudiSpring/img/reviewboard";
+	private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";
 	private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
 	private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		// 세션에서 사용자 정보 확인
+        HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+
+        
+		
 		int contentNo = Integer.parseInt(req.getParameter("contentNo"));
 
 		Connection conn = null;
@@ -47,7 +53,12 @@ public class EditReviewBoardController extends HttpServlet {
 			ReviewBoardDao boardDao = new ReviewBoardDao();
 			boardDao.setConnection(conn);
 			ReviewBoardDto boardDto = boardDao.selectOne(contentNo);
-
+			 // 권한 확인: 관리자이거나 작성자 본인인 경우만 접근 허용
+            if (userDto == null || (!userDto.hasAdminPermission() && userDto.getUserNo() != boardDto.getUserNo())) {
+                res.sendRedirect(req.getContextPath() + "/auth/signin");
+                return;
+            }
+			
 			req.setAttribute("boardDto", boardDto);
 			req.getRequestDispatcher("/jsp/board/reviewboard/editReviewBoardForm.jsp").forward(req, res);
 		} catch (Exception e) {
@@ -85,6 +96,11 @@ public class EditReviewBoardController extends HttpServlet {
 
 		HttpSession session = req.getSession();
 		UserDto userDto = (UserDto) session.getAttribute("userDto");
+		  // 권한 확인
+        if (userDto == null ) {
+            res.sendRedirect(req.getContextPath() + "/auth/signin");
+            return;
+        }
 
 		int userNo = userDto.getUserNo();
 		try {
@@ -133,6 +149,17 @@ public class EditReviewBoardController extends HttpServlet {
 								// 파일 저장
 								item.write(storeFile.toPath());
 								filePaths.add("reviewboard/" + uniqueFileName); // 상대 경로로 추가
+								   // 본문에 이미지 태그 추가
+                                // 본문에 이미지 태그 추가
+                                   if (contentText == null) {
+                                	   contentText = "";
+                                   }
+                                   contentText += "<br/><img src='/img/" 
+                                + filePaths.get(filePaths.size() - 1) + "' alt='"
+                                   		+ fileName + "' style='width:500px; height:300px; object-fit:cover;'/><br/>";
+								
+								
+								
 							}
 						}
 					}
@@ -151,16 +178,25 @@ public class EditReviewBoardController extends HttpServlet {
 			if (contentText == null || contentText.isEmpty()) {
 				throw new ServletException("Text is missing or empty.");
 			}
-
+			
+			
+			
 			// BoardDto 객체 생성 및 데이터 설정
 			ReviewBoardDto boardDto = new ReviewBoardDto();
 			boardDto.setContentNo(contentNo);
+			
+			
+			
+			
 			boardDto.setContentSubject(contentSubject);
 			boardDto.setContentText(contentText);
 			// `contentFiles` 필드가 null인지 확인하고 초기화
 			if (boardDto.getContentFiles() == null) {
 			    boardDto.setContentFiles(new ArrayList<>());
 			}
+			
+		
+			
 //            파일 삭제 체크박스가 선택된 경우 파일 경로를 기본 파일로 설정
 			if (deleteFile) {
 				boardDto.setContentFiles(new ArrayList<>());

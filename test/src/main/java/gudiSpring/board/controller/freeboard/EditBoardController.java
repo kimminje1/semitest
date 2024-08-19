@@ -36,7 +36,9 @@ public class EditBoardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         int contentNo = Integer.parseInt(req.getParameter("contentNo"));
-        
+        HttpSession session = req.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("userDto");
+
         Connection conn = null;
         try {
             ServletContext sc = this.getServletContext();
@@ -45,7 +47,11 @@ public class EditBoardController extends HttpServlet {
             BoardDao boardDao = new BoardDao();
             boardDao.setConnection(conn);
             BoardDto boardDto = boardDao.selectOne(contentNo);
-
+            // 권한 확인: 관리자이거나 작성자 본인인 경우만 접근 허용
+            if (userDto == null || (!userDto.hasAdminPermission() && userDto.getUserNo() != boardDto.getUserNo())) {
+                res.sendRedirect(req.getContextPath() + "/auth/signin");
+                return;
+            }
             req.setAttribute("boardDto", boardDto);
             req.getRequestDispatcher("/jsp/board/freeboard/editFreeBoardForm.jsp").forward(req, res);
         } catch (Exception e) {
