@@ -106,6 +106,8 @@ public class EditReviewBoardController extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			conn = (Connection) sc.getAttribute("conn");
+			ReviewBoardDao boardDao = new ReviewBoardDao();
+			boardDao.setConnection(conn);
 			if (JakartaServletFileUpload.isMultipartContent(req)) {
 				// 요청에서 폼 아이템 파싱
 				List<FileItem> formItems = upload.parseRequest(req);
@@ -166,11 +168,7 @@ public class EditReviewBoardController extends HttpServlet {
 				}
 			}
 
-			// 디버그 로그 추가
-			System.out.println("Content No: " + contentNo);
-			System.out.println("Subject: " + contentSubject);
-			System.out.println("Text: " + contentText);
-			System.out.println("File Path: " + filePaths);
+			
 
 			if (contentSubject == null || contentSubject.isEmpty()) {
 				throw new ServletException("Subject is missing or empty.");
@@ -183,13 +181,7 @@ public class EditReviewBoardController extends HttpServlet {
 			
 			// BoardDto 객체 생성 및 데이터 설정
 			ReviewBoardDto boardDto = new ReviewBoardDto();
-			boardDto.setContentNo(contentNo);
 			
-			
-			
-			
-			boardDto.setContentSubject(contentSubject);
-			boardDto.setContentText(contentText);
 			// `contentFiles` 필드가 null인지 확인하고 초기화
 			if (boardDto.getContentFiles() == null) {
 			    boardDto.setContentFiles(new ArrayList<>());
@@ -197,17 +189,37 @@ public class EditReviewBoardController extends HttpServlet {
 			
 		
 			
-//            파일 삭제 체크박스가 선택된 경우 파일 경로를 기본 파일로 설정
-			if (deleteFile) {
-				boardDto.setContentFiles(new ArrayList<>());
-			} else {
-				// 파일이 업로드된 경우 경로 추가
-				if (!filePaths.isEmpty()) {
-					boardDto.getContentFiles().addAll(filePaths);
-				}
-			}
-			ReviewBoardDao boardDao = new ReviewBoardDao();
-			boardDao.setConnection(conn);
+			
+	        // 현재 게시글의 기존 데이터를 가져옴
+	        ReviewBoardDto existingBoard = boardDao.selectOne(contentNo);
+	        List<String> existingFiles = existingBoard.getContentFiles();
+
+	        if (existingFiles == null) {
+	            existingFiles = new ArrayList<>();
+	        }
+
+	        // 파일 삭제 요청이 있는 경우
+	        if (deleteFile) {
+	            for (String filePath : existingFiles) {
+	                File fileToDelete = new File(UPLOAD_DIRECTORY + File.separator + filePath);
+	                if (fileToDelete.exists()) {
+	                    fileToDelete.delete();  // 파일 삭제
+	                }
+	            }
+	            boardDto.setContentFiles(new ArrayList<>());  // 파일 리스트를 비움
+	        } else {
+	            // 새로 업로드된 파일이 있는 경우
+	            if (!filePaths.isEmpty()) {
+	                existingFiles.addAll(filePaths);
+	            }
+	            boardDto.setContentFiles(existingFiles);
+	        }
+	        
+			
+			
+			boardDto.setContentNo(contentNo);
+			boardDto.setContentSubject(contentSubject);
+			boardDto.setContentText(contentText);
 			boardDao.updateBoard(boardDto);
 			
 

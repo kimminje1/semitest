@@ -2,69 +2,31 @@
  * 
  */
 
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-button');
 
+    deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            // 기본 폼 제출 동작을 막음
+            event.preventDefault();
 
-//지우기
-function deleteFile(fileName, contentNo) {
-	 console.log('File name:', fileName);
-   
-    if (confirm("정말로 이 파일을 삭제하시겠습니까?")) {
-       
-       const contentDiv = document.getElementById('contentText');
-		const images = contentDiv.querySelectorAll('img');
-		const cleanedFilePath = `/img/${fileName}`.trim(); // 정리된 파일 경로 
-        
-        // 이미지 찾기 및 제거
-     		 images.forEach(function(img) {
-    		const imgSrc = new URL(img.src).pathname; 
-    		console.log('Image src:', imgSrc);
+            // 이미지 삭제 등 원하는 작업 수행
+            const imgSrcToDelete = this.closest('form').querySelector('input[name="fileName"]').value;
+            const contentDiv = document.getElementById('contentText');
+            const imgToDelete = contentDiv.querySelector(`img[src*="${imgSrcToDelete}"]`);
 
-             if (imgSrc == cleanedFilePath) {
-                console.log('Removing image:', imgSrc);
-                try {
-                    const brBefore = img.previousSibling;
-                    const brAfter = img.nextSibling;
-                    if (brBefore && brBefore.nodeName === 'BR') {
-                        contentDiv.removeChild(brBefore);
-                    }
-                    if (brAfter && brAfter.nodeName === 'BR') {
-                        contentDiv.removeChild(brAfter);
-                    }
-                    const parentDiv = img.parentNode;
-                    parentDiv.removeChild(img); // img 태그 제거
-                    console.log('Image and surrounding <br/> tags removed successfully.');
-                } catch (error) {
-                    console.error('Error removing image:', error);
-                }
+            if (imgToDelete) {
+                imgToDelete.remove();
+                console.log(`Image with src ${imgSrcToDelete} has been removed from contentText.`);
             } else {
-                console.log('Image paths do not match.');
+                console.log(`No image found with src ${imgSrcToDelete} in contentText.`);
             }
+
+           
+            this.closest('form').submit();
         });
-       
-        // 서버에 파일 삭제 요청을 보냄
-        const requestUrl = `${window.location.origin}/test/board/reviewboard/deleteFile?contentNo=${contentNo}&fileName=${encodeURIComponent(fileName)}`;
-//        window.location.href = requestUrl;
- // 서버로 업데이트된 contentText를 전송하는 코드 추가
-                    const updatedContentText = contentDiv.innerHTML;
-                    fetch(requestUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            contentNo: contentNo,
-                            contentText: updatedContentText,
-                        }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Server response:', data);
-                        // 성공 시 페이지를 새로고침 또는 다른 로직 수행
-                        window.location.reload(); // 새로고침
-                    })
-                    .catch(error => console.error('Error:', error));
-    }
-	}
+    });
+});
 
 // 첨부파일을 저장할 배열
 let filesArray = [];
@@ -101,6 +63,7 @@ function handleFileSelect(event) {
             const img = document.createElement('img');
             img.src = e.target.result; // 미리보기 이미지의 Data URL 사용
             img.alt = file.name;
+             
              img.style.width = '100px';  // 미리보기 이미지의 너비를 100px로 설정
             img.style.height = '100px'; // 미리보기 이미지의 높이를 100px로 설정
             img.style.objectFit = 'cover'; // 이미지가 부모 요소의 크기에 맞게 잘리도록 설정
@@ -124,7 +87,8 @@ function handleFileSelect(event) {
 
 //1. Data URL을 사용하여 이미지를 본문에 삽입
 //2. 서버에 파일을 업로드하고 서버 경로로 src를 업데이트
-// 파일 삽입 로직을 별도의 함수로 분리
+// 파일 삽입 로직을 별도의 함수로 분리 
+//이친구가 실제 파일삽입
 function insertSelectedFiles() {
     const checkboxes = document.querySelectorAll('input[name="selectedFiles"]:checked');
 
@@ -194,7 +158,7 @@ function insertImageFromInput() {
                 reader.onload = function(e) {
                     insertImageToContent(e.target.result, file.name);
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(file); //e.target.result src=dataurl이되게함
 
                 insertedFilesArray.push(file); // 삽입된 파일을 기록하여 중복 방지
 			
@@ -211,27 +175,46 @@ function insertImageFromInput() {
 function insertImageToContent(previewSrc, filePath) {
     const contentDiv = document.getElementById('contentText');
 	
-	  // 중복 삽입 방지: 이미 같은 경로의 이미지가 있는지 확인
+	
+   
+
+    // 중복 삽입 방지: 이미 같은 경로의 이미지가 있는지 확인
     if ([...contentDiv.querySelectorAll('img')].some(img => img.dataset.filePath === filePath)) {
         console.warn('이미지가 이미 삽입되었습니다:', filePath);
         return;
     }
+	
    // 이미지 엘리먼트 생성
     const img = document.createElement('img');
     img.src = previewSrc;
     img.alt = "본문 이미지";
+  	 // previewSrc가 data URL인지 확인
+   // Data URL이 아닌 경우에만 ID 설정
+   
+         if (!previewSrc.startsWith('data:image')) {
+        const generatedId = generateRandomId();
+        img.id = generatedId;  // 서버 경로 이미지에만 ID 설정
+        console.log('Generated ID:', generatedId);
+    }
+   
+    
+   
     img.dataset.filePath = filePath; // 실제 서버 경로를 데이터 속성으로 저장	
     img.style.display = 'block';
     img.style.maxWidth = '800px';
     img.style.height = 'auto';
     img.style.marginBottom = '10px';
 
-  
+  	
     // 이미지와 단락을 contentDiv에 추가
     contentDiv.appendChild(img);
     
     
     
+}
+// 랜덤 ID 생성 함수
+function generateRandomId() {
+    return 'img-' + Math.random().toString(36).slice(2, 11);  // 'img-'로 시작하는 랜덤 ID 생성
 }
   // 작성 완료 버튼 클릭 시 이미지 URL 삭제
         document.getElementById('completeButton').addEventListener('click', function() {

@@ -163,3 +163,45 @@ body.body-style {
     height: auto;
     margin-bottom: 10px; /* 이미지 아래에 여백 추가 */
 }
+
+   .delete-form {
+        display: inline-block;
+        margin: 0;
+    }
+
+    .delete-button {
+        background-color: #f44336; /* Red */
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    .delete-button:hover {
+        background-color: #d32f2f; /* Darker red on hover */
+    }
+
+    .delete-form-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .file-name {
+        flex-grow: 1;
+        margin-right: 16px;
+        font-size: 14px;
+        color: #333;
+    }
