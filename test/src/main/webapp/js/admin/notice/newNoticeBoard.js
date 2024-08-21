@@ -60,7 +60,7 @@ function insertSelectedFiles() {
         const fileIndex = parseInt(checkbox.value);
         const file = filesArray[fileIndex];
         if (file instanceof File && !insertedFilesArray.includes(file)) {
-            const filePath = 'img/reviewboard/' + file.name; // 서버에서 사용할 실제 경로 생성
+            const filePath = 'img/noticeboard/' + file.name; // 서버에서 사용할 실제 경로 생성
             insertImageToContent(filePath); // 본문에 실제 경로 삽입
             insertedFilesArray.push(file); // 중복 삽입 방지
         } else {

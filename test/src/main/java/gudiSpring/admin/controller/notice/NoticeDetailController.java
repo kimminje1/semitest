@@ -1,4 +1,4 @@
-package gudiSpring.board.controller.notice;
+package gudiSpring.admin.controller.notice;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/board/notice/detail")
+@WebServlet("/admin/notice/detail")
 public class NoticeDetailController extends HttpServlet {
 	
 		@Override
@@ -64,7 +64,7 @@ public class NoticeDetailController extends HttpServlet {
 	            res.setContentType("text/html");
 	            res.setCharacterEncoding("UTF-8");
 	            
-	            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/notice/noticeDetailView.jsp");
+	            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/admin/notice/noticeDetailView.jsp");
 	            dispatcher.forward(req, res);
 	        } catch (Exception e) {
 	            e.printStackTrace();

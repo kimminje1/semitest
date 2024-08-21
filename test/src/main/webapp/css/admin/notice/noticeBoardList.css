@@ -1,0 +1,95 @@
+@charset "UTF-8";
+
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f9;
+	margin: 0;
+	padding: 20px;
+	color: #333;
+}
+
+h1 {
+	text-align: center;
+	color: #5c6bc0;
+}
+
+table {
+	width: 80%;
+	margin: 20px auto;
+	border-collapse: collapse;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+	padding: 12px;
+	border: 1px solid #ddd;
+	text-align: center;
+}
+
+th {
+	background-color: #3949ab;
+	color: #fff;
+}
+
+tr:nth-child(even) {
+	background-color: #f9f9f9;
+}
+
+tr:hover {
+	background-color: #e8eaf6;
+}
+
+a {
+	text-decoration: none;
+	color: #3949ab;
+	font-weight: bold;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.buttons {
+	margin-bottom: 20px;
+	text-align: right;
+}
+
+.buttons a {
+	padding: 10px 15px;
+	margin-right: 10px;
+	background-color: #007bff;
+	color: #fff;
+	text-decoration: none;
+	border-radius: 5px;
+	
+}
+
+.buttons a.btn-write {
+	background-color: #28a745;
+}
+
+.buttons a.btn-edit {
+	background-color: #ffc107;
+	border: 1px black solid;
+}
+
+.buttons a.btn-delete {
+	background-color: #dc3545;
+	border: 1px black solid;
+}
+
+.buttons a:hover {
+	background-color: #0056b3;
+}
+
+.buttons a.btn-write:hover {
+	background-color: #218838;
+}
+
+.buttons a.btn-edit:hover {
+	background-color: #e0a800;
+}
+
+.buttons a.btn-delete:hover {
+	background-color: #c82333;
+}

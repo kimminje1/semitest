@@ -1,4 +1,4 @@
-package gudiSpring.board.controller.reviewboard;
+package gudiSpring.board.controller.customerservice;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +16,8 @@ import org.apache.commons.fileupload2.core.FileItem;
 import org.apache.commons.fileupload2.core.FileUploadException;
 import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 
-import gudiSpring.board.dao.reviewboard.ReviewBoardDao;
-import gudiSpring.board.dto.reviewboard.ReviewBoardDto;
+import gudiSpring.board.dao.customerservice.CustomerServiceDao;
+import gudiSpring.board.dto.customerservice.CustomerServiceDto;
 import gudiSpring.user.dto.UserDto;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -27,11 +27,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/board/reviewboard/edit")
-public class EditReviewBoardController extends HttpServlet {
+@WebServlet("/board/customerserviceboard/edit")
+public class EditCustomerServiceBoardController extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/reviewboard";
+	private static final String UPLOAD_DIRECTORY = "D:/GudiSpring/img/customerserviceboard";
 	private static final String DEFAULT_FILE = "default-file.txt"; // 기본 파일 이름 설정
 	private static final String CHARSET = StandardCharsets.UTF_8.name(); // 인코딩 설정
 
@@ -50,9 +50,9 @@ public class EditReviewBoardController extends HttpServlet {
 			ServletContext sc = this.getServletContext();
 			conn = (Connection) sc.getAttribute("conn");
 
-			ReviewBoardDao boardDao = new ReviewBoardDao();
+			CustomerServiceDao boardDao = new CustomerServiceDao();
 			boardDao.setConnection(conn);
-			ReviewBoardDto boardDto = boardDao.selectOne(contentNo);
+			CustomerServiceDto boardDto = boardDao.selectOne(contentNo);
 			 // 권한 확인: 관리자이거나 작성자 본인인 경우만 접근 허용
             if (userDto == null || (!userDto.hasAdminPermission() && userDto.getUserNo() != boardDto.getUserNo())) {
                 res.sendRedirect(req.getContextPath() + "/auth/signin");
@@ -60,7 +60,7 @@ public class EditReviewBoardController extends HttpServlet {
             }
 			
 			req.setAttribute("boardDto", boardDto);
-			req.getRequestDispatcher("/jsp/board/reviewboard/editReviewBoardForm.jsp").forward(req, res);
+			req.getRequestDispatcher("/jsp/board/customerservice/editCustomerServiceBoardForm.jsp").forward(req, res);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ServletException("게시글 수정 중 오류 발생", e);
@@ -106,7 +106,7 @@ public class EditReviewBoardController extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			conn = (Connection) sc.getAttribute("conn");
-			ReviewBoardDao boardDao = new ReviewBoardDao();
+			CustomerServiceDao boardDao = new CustomerServiceDao();
 			boardDao.setConnection(conn);
 			if (JakartaServletFileUpload.isMultipartContent(req)) {
 				// 요청에서 폼 아이템 파싱
@@ -152,7 +152,7 @@ public class EditReviewBoardController extends HttpServlet {
 
 								// 파일 저장
 								item.write(storeFile.toPath());
-								filePaths.add("reviewboard/" + uniqueFileName); // 상대 경로로 추가
+								filePaths.add("customerserviceboard/" + uniqueFileName); // 상대 경로로 추가
 								   // 본문에 이미지 태그 추가
                                 // 본문에 이미지 태그 추가
                                    if (contentText == null) {
@@ -184,7 +184,7 @@ public class EditReviewBoardController extends HttpServlet {
 			
 			
 			// BoardDto 객체 생성 및 데이터 설정
-			ReviewBoardDto boardDto = new ReviewBoardDto();
+			CustomerServiceDto boardDto = new CustomerServiceDto();
 			
 			// `contentFiles` 필드가 null인지 확인하고 초기화
 			if (boardDto.getContentFiles() == null) {
@@ -195,7 +195,7 @@ public class EditReviewBoardController extends HttpServlet {
 			
 			
 	        // 현재 게시글의 기존 데이터를 가져옴
-	        ReviewBoardDto existingBoard = boardDao.selectOne(contentNo);
+			CustomerServiceDto existingBoard = boardDao.selectOne(contentNo);
 	        List<String> existingFiles = existingBoard.getContentFiles();
 
 	        if (existingFiles == null) {
@@ -229,7 +229,7 @@ public class EditReviewBoardController extends HttpServlet {
 
 
 			// 게시글 목록 페이지로 리다이렉트
-			res.sendRedirect(req.getContextPath() + "/board/reviewboard/list");
+			res.sendRedirect(req.getContextPath() + "/board/customerserviceboard/list");
 		} catch (FileUploadException | SQLException e) {
 			e.printStackTrace();
 			// 예외 처리

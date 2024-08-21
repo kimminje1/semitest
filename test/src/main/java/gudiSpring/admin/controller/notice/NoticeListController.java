@@ -1,4 +1,4 @@
-package gudiSpring.board.controller.notice;
+package gudiSpring.admin.controller.notice;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/board/notice/list")
+@WebServlet("/admin/notice/list")
 @SuppressWarnings("serial")
 public class NoticeListController extends HttpServlet {
 		
@@ -67,7 +67,7 @@ public class NoticeListController extends HttpServlet {
             // JSP 페이지로 포워딩
             res.setContentType("text/html");
             res.setCharacterEncoding("UTF-8");
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/board/notice/noticeBoardListView.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/jsp/admin/notice/noticeBoardListView.jsp");
             dispatcher.forward(req, res);
         }
         catch (Exception e) {

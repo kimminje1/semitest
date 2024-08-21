@@ -11,7 +11,6 @@ import java.util.List;
 
 
 import gudiSpring.board.dto.customerservice.CustomerServiceDto;
-import gudiSpring.board.dto.reviewboard.ReviewBoardDto;
 
 
 
@@ -104,7 +103,7 @@ public class CustomerServiceDao {
    
 
 	//게시글 상세 조회 
-    public ReviewBoardDto selectOne(int contentNo) throws SQLException {
+    public CustomerServiceDto selectOne(int contentNo) throws SQLException {
     	 String sql = "SELECT b.CONTENT_NO, b.CONTENT_SUBJECT, b.CONTENT_TEXT, b.CONTENT_BOARD_INFO_NO, " +
                  "b.CONTENT_CRE_DATE, b.CONTENT_UPDATE_DATE, b.USER_NO, u.NICKNAME " +
                  "FROM BOARD_CONTENT b " +
@@ -135,7 +134,7 @@ public class CustomerServiceDao {
                         }
                     }
 
-                    return new ReviewBoardDto(contentNo, contentSubject,
+                    return new CustomerServiceDto(contentNo, contentSubject,
                     		contentText, contentFiles, contentBoardInfoNo,
                     		contentCreDate, contentUpdateDate, userNo,nickname);
                 }
@@ -152,8 +151,8 @@ public class CustomerServiceDao {
 		public void addBoard(CustomerServiceDto customerserviceDto) throws SQLException {
 			// 게시글을 DB에 삽입하는 SQL 문
 			String sql = "INSERT INTO BOARD_CONTENT (CONTENT_NO, CONTENT_SUBJECT, CONTENT_TEXT, CONTENT_BOARD_INFO_NO, CONTENT_CRE_DATE, CONTENT_UPDATE_DATE, USER_NO) "
-					+ "VALUES (CONTENT_NO_SEQ.NEXTVAL, ?, ?, 3, SYSDATE, SYSDATE, ?)";
- //리뷰게시판번호=3 다른게시판시반드시수정**
+					+ "VALUES (CONTENT_NO_SEQ.NEXTVAL, ?, ?, 4, SYSDATE, SYSDATE, ?)";
+ //리뷰그외 다른게시판시반드시수정**
 
 		    
 			

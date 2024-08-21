@@ -2,31 +2,7 @@
  * 
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    const deleteButtons = document.querySelectorAll('.delete-button');
 
-    deleteButtons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
-            // 기본 폼 제출 동작을 막음
-            event.preventDefault();
-
-            // 이미지 삭제 등 원하는 작업 수행
-            const imgSrcToDelete = this.closest('form').querySelector('input[name="fileName"]').value;
-            const contentDiv = document.getElementById('contentText');
-            const imgToDelete = contentDiv.querySelector(`img[src*="${imgSrcToDelete}"]`);
-
-            if (imgToDelete) {
-                imgToDelete.remove();
-                console.log(`Image with src ${imgSrcToDelete} has been removed from contentText.`);
-            } else {
-                console.log(`No image found with src ${imgSrcToDelete} in contentText.`);
-            }
-
-           
-            this.closest('form').submit();
-        });
-    });
-});
 
 // 첨부파일을 저장할 배열
 let filesArray = [];
@@ -82,7 +58,7 @@ function handleFileSelect(event) {
       }  
     });
 	
-//    filesArray = files; // 선택된 파일을 배열에 저장
+
 }
 
 //1. Data URL을 사용하여 이미지를 본문에 삽입
@@ -91,7 +67,7 @@ function handleFileSelect(event) {
 //이친구가 실제 파일삽입
 function insertSelectedFiles() {
     const checkboxes = document.querySelectorAll('input[name="selectedFiles"]:checked');
-
+	 insertedFilesArray = []; // 기존 선택 목록 초기화
     checkboxes.forEach(checkbox => {
         const fileIndex = parseInt(checkbox.value);
         const file = filesArray[fileIndex];
@@ -106,32 +82,57 @@ function insertSelectedFiles() {
 }
 
 // 폼 제출 시 호출되는 로직
-document.querySelector('form').addEventListener('submit', function(event) {
-    insertSelectedFiles(); // 선택된 파일을 본문에 삽입
-
+document.getElementById('completeButton').addEventListener('click', function(event) {
+  
+    
+	 
+    
     const subjectElement = document.getElementById('subject');
     const contentTextElement = document.getElementById('contentText');
     const hiddenContentTextInput = document.getElementById('hiddenContentText');
+	const fileInputElement = document.getElementById('file');
+	
+	// 1. 폼 제출 전에 data URL을 사용하는 이미지를 삭제
+    const images = contentTextElement.querySelectorAll('img');
+    images.forEach(img => {
+        if (img.src.startsWith('data:image')) {
+            console.log('Removing Data URL image:', img.src); // 디버깅용 로그
+            img.remove(); // DOM에서 이미지 요소 제거
+        }
+    });
 
-    // 제목이 비어 있는지 확인
+    //2 제목이 비어 있는지 확인
     if (!subjectElement.value.trim()) {
         alert('제목을 입력해주세요.');
         event.preventDefault(); // 폼 제출을 막음
         return;
     }
 
-    // 내용이 비어 있는지 확인
+    // 3내용이 비어 있는지 확인
     if (!contentTextElement.innerHTML.trim()) {
         alert('본문 내용을 입력해주세요.');
         event.preventDefault(); // 폼 제출을 막음
         return;
     }
 
-    console.log('Setting contentSubject:', subjectElement.value); // 디버깅용 로그
-    console.log('Setting contentText:', contentTextElement.innerHTML); // 디버깅용 로그
-
-    // 내용이 사라지지 않도록 hidden 필드에 설정
+    
+    //4 내용이 사라지지 않도록 hidden 필드에 설정
     hiddenContentTextInput.value = contentTextElement.innerHTML;
+    
+   	
+    
+    
+         // 5. 파일 입력 요소의 파일 목록을 업데이트
+    const dataTransfer = new DataTransfer();
+
+    insertedFilesArray.forEach(file => {
+        dataTransfer.items.add(file);
+    });
+
+    // 기존 파일 입력 요소의 파일 목록을 본문에 삽입된 파일들로 대체
+    fileInputElement.files = dataTransfer.files;
+      // 최종적으로 폼 제출 전에 파일 목록을 콘솔에 출력
+   
 });
 
 
@@ -191,14 +192,6 @@ function insertImageToContent(previewSrc, filePath) {
   	 // previewSrc가 data URL인지 확인
    // Data URL이 아닌 경우에만 ID 설정
    
-         if (!previewSrc.startsWith('data:image')) {
-        const generatedId = generateRandomId();
-        img.id = generatedId;  // 서버 경로 이미지에만 ID 설정
-        console.log('Generated ID:', generatedId);
-    }
-   
-    
-   
     img.dataset.filePath = filePath; // 실제 서버 경로를 데이터 속성으로 저장	
     img.style.display = 'block';
     img.style.maxWidth = '800px';
@@ -212,21 +205,30 @@ function insertImageToContent(previewSrc, filePath) {
     
     
 }
-// 랜덤 ID 생성 함수
-function generateRandomId() {
-    return 'img-' + Math.random().toString(36).slice(2, 11);  // 'img-'로 시작하는 랜덤 ID 생성
+
+  
+        
+function removeReviewBoardImages() {
+    const contentDiv = document.getElementById('contentText');
+    const images = contentDiv.getElementsByTagName('img');
+    const imageArray = Array.from(images);
+
+    imageArray.forEach((img) => {
+        const imgPath = img.src.replace(window.location.origin + '/img/', '');
+
+        // filePaths 배열에 포함된 경로와 일치하는 경우 이미지를 삭제하지 않음
+        const shouldKeepImage = filePaths.some(filePath => imgPath === filePath);
+
+        if (imgPath.startsWith('reviewboard/') && !shouldKeepImage) {
+            img.remove();
+        }
+        else if (imgPath.startsWith('data:image')) {
+            img.remove();
+        }
+    });
 }
-  // 작성 완료 버튼 클릭 시 이미지 URL 삭제
-        document.getElementById('completeButton').addEventListener('click', function() {
-            const contentDiv = document.getElementById('contentText');
-            const images = contentDiv.querySelectorAll('img');
 
-            images.forEach(img => {
-                if (img.src.startsWith('data:image')) {
-                    img.remove(); // DOM에서 이미지 요소 제거
-                }
-            });
 
-           
-        });
+// 페이지가 로드될 때마다 함수를 실행합니다.
+window.onload = removeReviewBoardImages;
 
