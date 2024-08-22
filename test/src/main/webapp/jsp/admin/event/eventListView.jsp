@@ -18,6 +18,7 @@
   href="${pageContext.request.contextPath}/css/admin/nav.css" />
 <link rel="stylesheet"
   href="${pageContext.request.contextPath}/css/admin/event/eventList.css" />
+<script defer src="${pageContext.request.contextPath}/js/common/common.js"></script>
 <script defer type="text/javascript"
   src="${pageContext.request.contextPath}/js/movePage/movePageFncs.js"></script>
 <script defer type="text/javascript"
@@ -27,6 +28,11 @@
 
   <c:if test="${sessionScope.adminDto == null}">
     <c:redirect url="/admin/error" />
+  </c:if>
+
+  <!-- toast container -->
+  <c:if test="${not empty msg}">
+    <div id="toast" class="toast" data-message="${msg}"></div>
   </c:if>
 
   <jsp:include page="../nav.jsp"></jsp:include>
@@ -40,15 +46,22 @@
           <input type="hidden" name="formName" value="searchEventsForm" />
           <label for="event__search" class="event__select--title">이벤트 검색</label> 
           <input id="event__search" name="search"
-            placeholder="이벤트 이름을 작성해 주세요" />
+            placeholder="이벤트 이름을 작성해 주세요" value="${searchKeyword}"/>
           <button type="submit" class="btn" name="action"
             value="searchEventsForm">검색</button>
         </form>
       </div>
 
+      <!-- 전체로 다시 넘어가는 버튼 -->
+      <div class="btn-container">
+        <button onclick="moveAdminEventListPageFnc('${pageContext.request.contextPath}');" class="btn">
+          전체
+        </button>
+      </div>
+
       <!-- event list -->
       <div class="event__list">
-        <form action="./list" method="post">
+        <form action="./list" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
           <div class="event__list--btn">
             <input type="hidden" name="formName" value="removeEventsForm" />
             <button name="action" type="submit" class="btn btn--remove"
@@ -71,7 +84,13 @@
             <c:if test="${not empty eventList}">
               <c:forEach var="eventDto" items="${eventList}">
                 <li>
-                  <div class="text--black width--lg">${eventDto.eventName}</div>
+                  <div class="text--black width--lg">
+                    <a href="${pageContext.request.contextPath}/admin/event/detail?eventNo=${eventDto.eventNo}"
+                      class="text--black width--lg"
+                    >
+                      ${eventDto.eventName}
+                    </a>  
+                  </div>
                   <div class="text--black width--lg">${eventDto.openDate}</div>
                   <div class="text--black width--lg">${eventDto.closeDate}</div>
                   <div class="text--black">${eventDto.userName}</div>

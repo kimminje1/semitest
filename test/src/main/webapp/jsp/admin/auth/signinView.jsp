@@ -13,10 +13,15 @@
   href="${pageContext.request.contextPath}/css/common/admin.css" />
 <link rel="stylesheet"
   href="${pageContext.request.contextPath}/css/admin/auth/signin.css" />
-
+<script defer src="${pageContext.request.contextPath}/js/common/common.js"></script>
 <title>DWY Admin SignIn</title>
 </head>
 <body>
+  <!-- toast container -->
+  <c:if test="${not empty msg}">
+    <div id="toast" class="toast" data-message="${msg}"></div>
+  </c:if>
+  
   <div id="main-container">
 
     <div class="main-container__img"></div>

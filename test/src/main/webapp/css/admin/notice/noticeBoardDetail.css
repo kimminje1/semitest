@@ -2,13 +2,17 @@
 "UTF-8"
 ; /* noticeDetail.css */
 #main-container {
-	width: 80%;
-	margin: 0 auto;
+	
+	width: 63vw;
 	padding: 20px;
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	background-color: #f9f9f9;
+	color:black;
+	margin-left: 500px; /* 네비게이션 바의 너비 + 패딩만큼 왼쪽 여백 설정 */
+	flex-grow: 1; /* 남은 공간을 채우도록 설정 */
 }
+
 
 h1 {
 	text-align: center;
@@ -21,13 +25,16 @@ h1 {
 	width: 100%;
 	border-collapse: collapse;
 	margin-bottom: 20px;
+	color:black;
 	border: 1px solid #ddd; /* 테이블 전체에 경계선 추가 */
+	
 }
 
 .notice-table .info-row {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+
 }
 
 .notice-table .label {
@@ -36,6 +43,7 @@ h1 {
 	padding: 8px;
 	width: 12%;
 	background-color: #f2f2f2; /* 라벨 부분 배경색 */
+		color: #333;
 }
 .notice-table th.label {
     width: 150px; /* 너비 조정 */
@@ -49,6 +57,7 @@ h1 {
 	padding: 8px;
 	text-align: left;
 	width: 15%;
+		color: #333;
 }
 
 .notice-table #contentText {
@@ -66,9 +75,11 @@ h1 {
     border-collapse: collapse;
     margin-bottom: 20px;
     border: 1px solid #ddd;
+    	color: #333;
 }
-
-
+#contentText-table .value {
+	color: #333;
+}
 #contentText-table td {
     padding: 20px;
     font-size: 16px;

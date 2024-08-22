@@ -12,10 +12,17 @@
 	href="${pageContext.request.contextPath}/css/common/common.css">
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/css/admin/notice/noticeBoardList.css">
-
-
+ <link rel="stylesheet"
+  href="${pageContext.request.contextPath}/css/common/admin.css" />
+<link rel="stylesheet"
+  href="${pageContext.request.contextPath}/css/admin/nav.css" />
+ <script defer type="text/javascript"
+  src="${pageContext.request.contextPath}/js/movePage/movePageFncs.js"></script>
+<script defer type="text/javascript"
+  src="${pageContext.request.contextPath}/js/admin/navFocus.js"></script>
 </head>
 <body>
+<jsp:include page="/jsp/admin/nav.jsp"></jsp:include>
 	<div id="main-container">
 		<h1>공지사항 목록</h1>
 		<!-- 글쓰기 버튼 -->
@@ -41,7 +48,8 @@
 					<tr>
 						<td>${notice.contentNo}</td>
 						<td><a
-							href="${pageContext.request.contextPath}/admin/notice/detail?contentNo=${notice.contentNo}">${notice.contentSubject}</a></td>
+							href="${pageContext.request.contextPath}/admin/notice/detail?contentNo=${notice.contentNo}"
+							class="abtn">${notice.contentSubject}</a></td>
 						<td>${notice.contentText}</td>
 						<td>${notice.nickname}</td>
 						<td>${notice.contentCreDate}</td>
@@ -49,9 +57,9 @@
 						<td>
 							<!-- 수정 버튼 --> <a
 							href="${pageContext.request.contextPath}/admin/notice/edit?contentNo=${notice.contentNo}"
-							class="btn-edit">수정</a> <!-- 삭제 버튼 --> <a
+							class="abtn">수정</a> <!-- 삭제 버튼 --> <a
 							href="${pageContext.request.contextPath}/admin/notice/delete?contentNo=${notice.contentNo}"
-							class="btn-delete">삭제</a>
+							class="abtn">삭제</a>
 						</td>
 					</tr>
 				</c:forEach>

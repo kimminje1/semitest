@@ -5,9 +5,18 @@ body {
 	background-color: #f4f4f9;
 	margin: 0;
 	padding: 20px;
-	color: #333;
+	color:black;  
 }
-
+#main-container {
+    margin-left: 240px; /* 네비게이션 바의 너비 + 패딩만큼 왼쪽 여백 설정 */
+    padding: 20px; /* 메인 컨테이너 내부 패딩 */
+    background-color: #f4f4f4; /* 메인 컨테이너 배경색 */
+    flex-grow: 1; /* 남은 공간을 채우도록 설정 */
+}
+.abtn{
+	color:blue;
+	
+}
 h1 {
 	text-align: center;
 	color: #5c6bc0;
@@ -24,6 +33,7 @@ th, td {
 	padding: 12px;
 	border: 1px solid #ddd;
 	text-align: center;
+	color:black; 
 }
 
 th {
@@ -39,15 +49,6 @@ tr:hover {
 	background-color: #e8eaf6;
 }
 
-a {
-	text-decoration: none;
-	color: #3949ab;
-	font-weight: bold;
-}
-
-a:hover {
-	text-decoration: underline;
-}
 
 .buttons {
 	margin-bottom: 20px;

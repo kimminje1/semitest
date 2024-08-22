@@ -13,9 +13,8 @@
   
   <div class="site-info__list">
     <ul>
-      <li><a href="#" class="">대시보드</a></li>
       <li><a href="${pageContext.request.contextPath}/admin/main" class="nav-focus">회원 관리</a></li>
-      <li><a href="${pageContext.request.contextPath}/admin/place" class="nav-focus">장소 관리</a></li>
+      <li><a href="${pageContext.request.contextPath}/admin/place/list" class="nav-focus">장소 관리</a></li>
       <li><a href="#" class="nav-focus">예약 현황</a></li>
       <li><a href="${pageContext.request.contextPath}/admin/event/list" class="nav-focus">이벤트 현황</a></li>
     </ul>
@@ -30,7 +29,7 @@
   <!-- jstl 반복문 사용해서 모든 관리자 정보 확인 -->
   <div class="admin-info__list">
     <ul>
-      <li><a href="#" class="">관리자 정보</a></li>
+      <li><a href="${pageContext.request.contextPath}/admin/list" class="">관리자 정보</a></li>
     </ul>
   </div>
 

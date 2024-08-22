@@ -9,15 +9,20 @@
 	    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css">
      <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/common/common.css"> 
+    <link rel="stylesheet"
+  href="${pageContext.request.contextPath}/css/admin/nav.css" />
     <link rel="stylesheet" type="text/css" 
     href="${pageContext.request.contextPath}/css/admin/notice/noticeBoardDetail.css">
-      
-    <style>
-      
-    </style>
+       <link rel="stylesheet"
+  href="${pageContext.request.contextPath}/css/common/admin.css" />
+
+   <script defer type="text/javascript"
+  src="${pageContext.request.contextPath}/js/movePage/movePageFncs.js"></script>
+<script defer type="text/javascript"
+  src="${pageContext.request.contextPath}/js/admin/navFocus.js"></script>
 </head>
 <body>
- 
+  <jsp:include page="/jsp/admin/nav.jsp"></jsp:include>
  <div id="main-container">
     <h1>공지사항 상세보기</h1>
     <table class="notice-table">
